@@ -1,32 +1,36 @@
-/// @desc
+/// @desc Setup Player
 
-colours = [
-	#00FFFF,
-	#FF0048,
-	#55FF00,
-	#FFC700
-];
+index = 0;
+/// feather disable GM1013
+index = player_id;
+// Feather disable once GM1011
+if player_local oCamera.follow = id;
+/// feather enable GM1013
+
+var _info = rollback_get_info(index);
+show_debug_message(_info.player_name)
+if _info.player_type == "User" {
+	
+	oGameManager.names[index] = string_upper(_info.player_name);
+}
+
+image_angle = irandom(360);
 
 mouseClickX = 0;
 mouseClickY = 0;
 mouseX = 0;
 mouseY = 0;
 drawingLine = false;
-launchDir = 0;
+launchDir = image_angle;
 launchDist = 0;
 launchLenMax = 400;
 launchSpd = 20;
 
-x = room_width/2;
-y = room_height/2;
-
-//Speed
 mass = 1;
-
-fric = 0.08;
 hSpd = 0;
 vSpd = 0;
 
-for(var i = 0; i < 3; i++) {
-	instance_find(oDummy,i).index = i + 1;
-}
+x = room_width/2;
+y = room_height/2;
+
+x -= 100 * index;

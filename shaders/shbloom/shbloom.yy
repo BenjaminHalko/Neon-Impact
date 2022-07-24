@@ -2,7 +2,7 @@
   "type": 1,
   "parent": {
     "name": "Render",
-    "path": "folders/Render.yy",
+    "path": "folders/Global/Render.yy",
   },
   "resourceVersion": "1.0",
   "name": "shBloom",

@@ -1,0 +1,3 @@
+/// @desc
+
+Collision(other);

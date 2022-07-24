@@ -1,4 +1,4 @@
-function Collision(_collider,_restitution=0.5) {
+function Collision(_collider,_restitution) {
 	var _dist = point_distance(x,y,_collider.x,_collider.y);
 	
 	var _x = (_collider.x-x) * 1/_dist;
@@ -9,10 +9,10 @@ function Collision(_collider,_restitution=0.5) {
 	
 	//Correct Positions
 	var _corr = (sprite_width / 2 + _collider.sprite_width / 2 - _dist) / 2;
-	x += _x * -_corr;
-	y += _y * -_corr;
+	x -= _x * _corr;
+	y -= _y * _corr;
 	
-	if _collider.object_index != oWallCircle {
+	if _collider.object_index != oWall {
 		_collider.x += _x * _corr;
 		_collider.y += _y * _corr;
 	}
@@ -28,4 +28,8 @@ function Collision(_collider,_restitution=0.5) {
 	
 	_collider.hSpd += _x * (_len2 - _v2);
 	_collider.vSpd += _y * (_len2 - _v2);
+	
+	//Change Launch Dir
+	if object_index != oPlayer or !drawingLine launchDir = point_direction(0,0,hSpd,vSpd);
+	if _collider.object_index != oWall _collider.launchDir = point_direction(0,0,hSpd,vSpd);
 }
