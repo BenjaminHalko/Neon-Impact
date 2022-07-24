@@ -1,6 +1,8 @@
 /// @desc
-
+/*
 enableLive;
+
+if disable exit;
 
 surface_reset_target();
 
