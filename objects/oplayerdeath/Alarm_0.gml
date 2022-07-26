@@ -1,5 +1,6 @@
-/// @desc
+/// @desc Flash
 
 number++;
 
-if number < 7 alarm[0] = flashSpd;
+if number == 15 mode = true;
+else alarm[0] = flashSpd;

@@ -1,6 +1,14 @@
 /// @desc Move
 
-if !rollback_game_running exit;
+if !rollback_game_running or dead exit;
+
+if disable {
+	if !instance_exists(deadObject) {
+		dead = true;
+		if player_local oCamera.spectate = true;
+	}
+	exit;
+}
 
 var _input = rollback_get_input();
 

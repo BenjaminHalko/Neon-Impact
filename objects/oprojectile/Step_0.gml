@@ -21,3 +21,5 @@ else if y >= room_height-sprite_width/2 vSpd = -abs(vSpd);
 
 x += hSpd;
 y += vSpd;
+
+if noProjectileCollision and !place_meeting(x,y,oProjectile) noProjectileCollision = false;

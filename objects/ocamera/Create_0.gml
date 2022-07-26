@@ -10,3 +10,8 @@ targetX = 0;
 targetY = 0;
 
 follow = noone;
+spectate = false;
+
+shakeRemain = 0;
+shakeLength = 0;
+shakeMagnitude = 0;

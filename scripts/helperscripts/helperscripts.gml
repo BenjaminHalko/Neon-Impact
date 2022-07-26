@@ -60,8 +60,8 @@ function ValuePercent(_x, _a, _b) {
 /// @param {Real} offset The offset of the wave from 0 to 1
 /// @return {Real}
 function Wave(_from, _to, _duration, _offset) {
-	a4 = (_to - _from) * 0.5;
-	return _from + a4 + sin((((current_time * 0.001) + _duration * _offset) / _duration) * (pi*2)) * a4;
+	var a4 = (_to - _from) * 0.5;
+	return _from + a4 + sin((((rollback_current_frame / 60) + _duration * _offset) / _duration) * (pi*2)) * a4;
 }
 
 /// @desc Returns the value wrapped, values over or under will be wrapped around
@@ -95,4 +95,24 @@ function Wrap(_value, _min, _max) {
 	    return(_value);
 	}
 
+}
+
+function ScreenShake(_magnitude, _length,_x=-1,_y=-1) {
+	with (oCamera) {
+		if (_x == -1 or point_in_rectangle(_x,_y,camX,camY,camX+camW,camY+camH)) and _magnitude > shakeRemain {
+			shakeLength = _length;
+			shakeMagnitude = _magnitude;
+			shakeRemain = _magnitude;
+		}
+	}
+}
+
+function Reset() {
+	with(oGlobalManager) {
+		
+	}
+	
+	with(oPlayer) {
+		
+	}
 }

@@ -8,3 +8,6 @@ maxSpd = 60;
 colour = c_white;
 launchDir = irandom(360);
 image_angle = launchDir;
+
+noProjectileCollision = false;
+dead = false;

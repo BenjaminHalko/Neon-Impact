@@ -28,8 +28,8 @@
   "properties": [],
   "overriddenProperties": [],
   "parent": {
-    "name": "Entities",
-    "path": "folders/Entities.yy",
+    "name": "More",
+    "path": "folders/Entities/More.yy",
   },
   "resourceVersion": "1.0",
   "name": "oPlayerTrail",

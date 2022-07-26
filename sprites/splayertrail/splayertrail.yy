@@ -69,8 +69,8 @@
   ],
   "nineSlice": null,
   "parent": {
-    "name": "Sprites",
-    "path": "folders/Entities/Sprites.yy",
+    "name": "More",
+    "path": "folders/Entities/More.yy",
   },
   "resourceVersion": "1.0",
   "name": "sPlayerTrail",
