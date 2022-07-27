@@ -1,4 +1,4 @@
 /// @desc
 
-rollback_leave_game();
+if global.multiplayer rollback_leave_game();
 restart = true;

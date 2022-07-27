@@ -4,9 +4,10 @@
 varying vec2 v_vTexcoord;
 varying vec4 v_vColour;
 
-uniform float bloom_intensity;
-uniform float bloom_darken;
 uniform sampler2D bloom_texture;
+
+const float bloom_intensity = 0.9;
+const float bloom_darken = 0.55;
 
 void main()
 {

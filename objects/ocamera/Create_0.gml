@@ -1,4 +1,4 @@
-/// @desc
+/// @desc Initialize Camera
 
 cam = view_get_camera(0);
 camW = camera_get_view_width(cam);

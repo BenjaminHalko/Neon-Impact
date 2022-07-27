@@ -1,8 +1,8 @@
 /// @desc Move
 
-if !rollback_game_running or dead exit;
+if PAUSE or dead exit;
 
-if disable {
+if !visible {
 	if !instance_exists(deadObject) {
 		dead = true;
 		if player_local oCamera.spectate = true;
@@ -10,7 +10,15 @@ if disable {
 	exit;
 }
 
-var _input = rollback_get_input();
+var _input;
+
+if global.multiplayer _input = rollback_get_input();
+else _input = {
+	mouseLeft: mouse_check_button(mb_left),
+	mouseLeft_pressed: mouse_check_button_pressed(mb_left),
+	mouseX: window_mouse_get_x(),
+	mouseY: window_mouse_get_y()
+};
 
 if _input.mouseLeft {
 	drawingLine = true;
@@ -32,12 +40,6 @@ if _input.mouseLeft {
 }
 
 image_angle = ApproachCircleEase(image_angle,launchDir,40,0.6);
-
-if x < sprite_width/2 hSpd = abs(hSpd);
-else if x >= room_width-sprite_width/2 hSpd = -abs(hSpd);
-if y < sprite_width/2 vSpd = abs(vSpd);
-else if y >= room_height-sprite_width/2 vSpd = -abs(vSpd);
-
 
 var _dir = point_direction(0,0,hSpd,vSpd);
 hSpd = Approach(hSpd,0,abs(lengthdir_x(FRIC,_dir)));

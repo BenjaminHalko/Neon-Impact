@@ -1,18 +1,17 @@
 function Collision(_collider,_restitution) {
-	_restitution = 2;
 	var _dist = point_distance(x,y,_collider.x,_collider.y);
 	
 	var _x = (_collider.x-x) * 1/_dist;
 	var _y = (_collider.y-y) * 1/_dist;
 	
 	
-	var _v1 = hSpd *_x + vSpd * _y;
-	var _v2 = _collider.hSpd * _x +  _collider.vSpd * _y;
+	var _v1 = dot_product(hSpd,vSpd,_x,_y);
+	var _v2 = dot_product(_collider.hSpd,_collider.vSpd,_x,_y);
 	
 	if sign(_v1) != 1 and sign(_v2) != 1 return;
 	
 	//Correct Positions
-	var _corr = (sprite_width / 2 + _collider.sprite_width / 2 - _dist) / 2;
+	var _corr = (collisionWidth / 2 + _collider.collisionWidth / 2 - _dist) / 2;
 	x -= _x * _corr;
 	y -= _y * _corr;
 	

@@ -1,6 +1,6 @@
 /// @desc
 
-if disable exit;
+if !visible exit;
 
-Collision(other,1.2);
+Collision(other,1.4);
 other.colour = global.colours[index];

@@ -1,16 +1,15 @@
-/// @desc
+/// @desc Move Wall
 
 enableLive;
 
-rotation -= 0.1;
-
-wallPercent = 0.5;
+if PAUSE exit;
 if !surface_exists(surface) surface = surface_create(room_width,room_height);
 
-var _len = maxLen*wallPercent;
+#region Collision
+var _len = lerp(minLen,maxLen,animcurve_channel_evaluate(curve,wallPercent));
 
 with (oPlayer) {
-	if disable or index != 0 continue;
+	if !visible or index != 0 continue;
 	
 	var _dead = true;
 	
@@ -21,7 +20,7 @@ with (oPlayer) {
 		}
 	}
 	
-	if _dead and rollback_sync_on_frame() {
+	if _dead and SYNC {
 		deadObject = instance_create_layer(x,y,"Dead",oPlayerDeath);
 		with deadObject {
 			index = other.index;
@@ -41,14 +40,21 @@ with (oPlayer) {
 				mass = 64/96;
 			}
 		}
-		disable = true;
+		visible = false;
 		
 		if player_local {
-			oGlobalManager.finalTime = global.time;
-			oGameManager.scores[index] = global.time;
+			global.scores[index] = global.time;
 
 			try { gxc_challenge_submit_score(global.time*1000,undefined,{challengeId: CHALLENGEID}); }
 			catch(_error) { show_debug_message(_error); }
+		}
+		
+		oGameManager.stopTimer = true;
+		with(oPlayer) {
+			if visible {
+				oGameManager.stopTimer = false;
+				break;
+			}
 		}
 	}
 }
@@ -94,3 +100,26 @@ with(oProjectile) {
 	hSpd = lengthdir_x(_spd,_dir);
 	vSpd = lengthdir_y(_spd,_dir);
 }
+#endregion
+
+#region Moving
+rotation -= 0.1;
+wallPercent = Approach(wallPercent,in,0.001);
+if wallPercent == in {
+	in = !in;
+	xstart = x;
+	ystart = y;
+	if in {
+		maxLen = max(maxLen-100,maxLenMin);
+		xTo = irandom_range(maxLen+100,room_width-maxLen-100);
+		yTo = irandom_range(maxLen+100,room_height-maxLen-100);
+	} else {
+		minLen = max(minLen-100,minLenMin);
+		xTo = irandom_range(minLen+100,room_width-minLen-100);
+		yTo = irandom_range(minLen+100,room_height-minLen-100);
+	}
+}
+
+x = lerp(xstart,xTo,1-abs(in-animcurve_channel_evaluate(curve,wallPercent)));
+y = lerp(ystart,yTo,1-abs(in-animcurve_channel_evaluate(curve,wallPercent)));
+#endregion

@@ -1,10 +1,12 @@
-/// @desc
+/// @desc Draw Wall
+
+enableLive;
 
 surface_set_target(surface);
 draw_sprite_ext(sDoomWall,0,0,0,room_width/48,room_height/40,0,c_white,1);
 
 draw_set_color(c_black);
-var _len = maxLen*wallPercent;
+var _len = lerp(minLen,maxLen,animcurve_channel_evaluate(curve,wallPercent));
 
 gpu_set_blendmode(bm_subtract);
 for(var i = 0; i < 6; i++) {

@@ -1,3 +1,4 @@
+//feather disable all
 
 // Lock file execution
 function gxc_api() {}

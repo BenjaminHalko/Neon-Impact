@@ -1,5 +1,5 @@
 /// @desc
 
-if disable or other.disable exit;
+if !visible or !other.visible exit;
 
-Collision(other,1.1);
+Collision(other,1.4);

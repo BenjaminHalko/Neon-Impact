@@ -1,4 +1,4 @@
-/// @desc
+/// @desc Move Camera
 
 //Spectate
 if spectate {
@@ -13,8 +13,8 @@ else if instance_exists(follow) { //Update target
 }
 
 //Move camera to target
-camX += (targetX - camX) / 15;
-camY += (targetY - camY) / 15;
+camX += (targetX - camX) / 20;
+camY += (targetY - camY) / 20;
 
 //Don't Move Out Of Bounds
 camX = clamp(camX,0,room_width-camW);

@@ -61,7 +61,7 @@ function ValuePercent(_x, _a, _b) {
 /// @return {Real}
 function Wave(_from, _to, _duration, _offset) {
 	var a4 = (_to - _from) * 0.5;
-	return _from + a4 + sin((((rollback_current_frame / 60) + _duration * _offset) / _duration) * (pi*2)) * a4;
+	return _from + a4 + sin((((global.multiplayer ? rollback_current_frame / 60 : current_time * 0.001) + _duration * _offset) / _duration) * (pi*2)) * a4;
 }
 
 /// @desc Returns the value wrapped, values over or under will be wrapped around
