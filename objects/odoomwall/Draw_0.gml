@@ -6,7 +6,7 @@ surface_set_target(surface);
 draw_sprite_ext(sDoomWall,0,0,0,room_width/48,room_height/40,0,c_white,1);
 
 draw_set_color(c_black);
-var _len = lerp(minLen,maxLen,animcurve_channel_evaluate(curve,wallPercent));
+var _len = max(0,wallLen);
 
 gpu_set_blendmode(bm_subtract);
 for(var i = 0; i < 6; i++) {
@@ -14,7 +14,7 @@ for(var i = 0; i < 6; i++) {
 }
 gpu_set_blendmode(bm_normal);
 draw_set_color(make_color_hsv(Wave(260,265,5,0)/360*255,255,255));
-	var _width = 70;
+	var _width = 70+min(0,wallLen);
 	_len += _width;
 for(var i = 0; i < 6; i++) {
 	draw_line_width(

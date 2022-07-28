@@ -3,18 +3,26 @@
 enableLive;
 
 if PAUSE exit;
+
 if !surface_exists(surface) surface = surface_create(room_width,room_height);
 
+if global.gameOver {
+	rotation -= 0.1;
+	disappear = Approach(disappear,50,1);
+	wallLen = Approach(wallLen,-70,disappear);
+	exit;
+}
+
 #region Collision
-var _len = lerp(minLen,maxLen,animcurve_channel_evaluate(curve,wallPercent));
+wallLen = lerp(minLen,maxLen,animcurve_channel_evaluate(curve,wallPercent));
 
 with (oPlayer) {
-	if !visible or index != 0 continue;
+	if !visible continue;
 	
 	var _dead = true;
 	
 	for(var i = 0; i < 6; i++) {
-		if point_in_triangle(x,y,other.x,other.y,other.x+lengthdir_x(_len - 45,i*360/6+other.rotation),other.y+lengthdir_y(_len - 45,i*360/6+other.rotation),other.x+lengthdir_x(_len - 45,(i+1)*360/6+other.rotation),other.y+lengthdir_y(_len - 45,(i+1)*360/6+other.rotation)) {
+		if point_in_triangle(x,y,other.x,other.y,other.x+lengthdir_x(other.wallLen - 45,i*360/6+other.rotation),other.y+lengthdir_y(other.wallLen - 45,i*360/6+other.rotation),other.x+lengthdir_x(other.wallLen - 45,(i+1)*360/6+other.rotation),other.y+lengthdir_y(other.wallLen - 45,(i+1)*360/6+other.rotation)) {
 			_dead = false;
 			break;
 		}
@@ -42,9 +50,8 @@ with (oPlayer) {
 		}
 		visible = false;
 		
+		global.scores[index] = global.time;
 		if player_local {
-			global.scores[index] = global.time;
-
 			try { gxc_challenge_submit_score(global.time*1000,undefined,{challengeId: CHALLENGEID}); }
 			catch(_error) { show_debug_message(_error); }
 		}
@@ -63,7 +70,7 @@ with(oPlayer) {
 	var _collide = true;
 	
 	for(var i = 0; i < 6; i++) {
-		if point_in_triangle(x,y,other.x,other.y,other.x+lengthdir_x(_len,i*360/6+other.rotation),other.y+lengthdir_y(_len,i*360/6+other.rotation),other.x+lengthdir_x(_len,(i+1)*360/6+other.rotation),other.y+lengthdir_y(_len,(i+1)*360/6+other.rotation)) {
+		if point_in_triangle(x,y,other.x,other.y,other.x+lengthdir_x(other.wallLen,i*360/6+other.rotation),other.y+lengthdir_y(other.wallLen,i*360/6+other.rotation),other.x+lengthdir_x(other.wallLen,(i+1)*360/6+other.rotation),other.y+lengthdir_y(other.wallLen,(i+1)*360/6+other.rotation)) {
 			_collide = false;
 			break;
 		}
@@ -83,7 +90,7 @@ with(oProjectile) {
 	var _collide = true;
 	
 	for(var i = 0; i < 6; i++) {
-		if point_in_triangle(x,y,other.x,other.y,other.x+lengthdir_x(_len,i*360/6+other.rotation),other.y+lengthdir_y(_len,i*360/6+other.rotation),other.x+lengthdir_x(_len,(i+1)*360/6+other.rotation),other.y+lengthdir_y(_len,(i+1)*360/6+other.rotation)) {
+		if point_in_triangle(x,y,other.x,other.y,other.x+lengthdir_x(other.wallLen,i*360/6+other.rotation),other.y+lengthdir_y(other.wallLen,i*360/6+other.rotation),other.x+lengthdir_x(other.wallLen,(i+1)*360/6+other.rotation),other.y+lengthdir_y(other.wallLen,(i+1)*360/6+other.rotation)) {
 			_collide = false;
 			break;
 		}
@@ -104,7 +111,7 @@ with(oProjectile) {
 
 #region Moving
 rotation -= 0.1;
-wallPercent = Approach(wallPercent,in,0.001);
+if !oGameManager.stopTimer wallPercent = Approach(wallPercent,in,0.001);
 if wallPercent == in {
 	in = !in;
 	xstart = x;

@@ -11,6 +11,9 @@ maxLenMin = maxLen - 500;
 minLen = 1600;
 minLenMin = 900;
 
+wallLen = 0;
+disappear = 0;
+
 in = true;
 
 curve = animcurve_get_channel(DoomCurve,0);

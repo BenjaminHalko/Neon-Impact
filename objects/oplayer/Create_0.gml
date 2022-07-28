@@ -8,9 +8,9 @@ if player_local oCamera.follow = id;
 /// feather enable GM1013
 
 if global.multiplayer {
-	var _info = rollback_get_info(index);
-	if _info.player_type == "User" global.names[index] = _info.player_name;
-	global.playerSprites[index] = _info.player_avatar_sprite;
+	if player_type == "User" {
+		global.names[index] = "Benjamin";//player_name;
+	}
 }
 
 image_angle = irandom(360);

@@ -6,7 +6,7 @@
 #macro PAUSE (global.multiplayer and !rollback_game_running)
 #macro SYNC (!global.multiplayer or rollback_sync_on_frame())
 
-#macro CHALLENGEID ""
+#macro CHALLENGEID "d655ef5e-ed52-4228-ac58-292edf12ec3d"
 
 global.colours = [ #00FFFF, #FF0048, #55FF00, #FF9C00, #5500FF ];
 global.multiplayer = true;

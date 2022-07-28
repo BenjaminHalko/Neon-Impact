@@ -116,3 +116,31 @@ function Reset() {
 		
 	}
 }
+
+function HexagonSprite(_sprite) {
+	var _maxSize = sprite_get_width(sDefaultIcons);
+	var _width = sprite_get_width(_sprite);
+	var _surface = surface_create(_maxSize,_maxSize);
+	surface_set_target(_surface);
+	draw_sprite(sDefaultIcons,4,0,0);
+	gpu_set_blendmode_ext(bm_dest_alpha,bm_inv_dest_alpha);
+	draw_sprite_ext(_sprite,0,0,0,_maxSize/_width,_maxSize/_width,0,c_white,1);
+	gpu_set_blendmode(bm_normal);
+	surface_reset_target();
+	
+	var _sprite1 = sprite_create_from_surface(_surface,0,0,_maxSize,_maxSize,false,false,0,0);
+	
+	surface_set_target(_surface);
+	draw_clear_alpha(c_black,0);
+	draw_sprite_ext(sDefaultIcons,4,0,_maxSize,1,1,90,c_white,1);
+	gpu_set_blendmode_ext(bm_dest_alpha,bm_inv_dest_alpha);
+	draw_sprite_ext(_sprite,0,0,0,_maxSize/_width,_maxSize/_width,0,c_white,1);
+	gpu_set_blendmode(bm_normal);
+	surface_reset_target();
+	
+	var _sprite2 = sprite_create_from_surface(_surface,0,0,_maxSize,_maxSize,false,false,0,0);
+	
+	sprite_delete(_sprite);
+	surface_free(_surface);
+	return [_sprite1,_sprite2];
+}
