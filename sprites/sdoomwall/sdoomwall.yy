@@ -97,8 +97,8 @@
     "resourceType": "GMNineSliceData",
   },
   "parent": {
-    "name": "More",
-    "path": "folders/Entities/More.yy",
+    "name": "Doom Wall",
+    "path": "folders/Entities/Doom Wall.yy",
   },
   "resourceVersion": "1.0",
   "name": "sDoomWall",

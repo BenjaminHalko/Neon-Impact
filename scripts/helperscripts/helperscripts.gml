@@ -107,16 +107,6 @@ function ScreenShake(_magnitude, _length,_x=-1,_y=-1) {
 	}
 }
 
-function Reset() {
-	with(oGlobalManager) {
-		
-	}
-	
-	with(oPlayer) {
-		
-	}
-}
-
 function HexagonSprite(_sprite) {
 	var _maxSize = sprite_get_width(sDefaultIcons);
 	var _width = sprite_get_width(_sprite);
@@ -129,6 +119,12 @@ function HexagonSprite(_sprite) {
 	surface_reset_target();
 	
 	var _sprite1 = sprite_create_from_surface(_surface,0,0,_maxSize,_maxSize,false,false,0,0);
+	
+	if object_index == oGlobalManager {
+		sprite_delete(_sprite);
+		surface_free(_surface);
+		return _sprite1;
+	}
 	
 	surface_set_target(_surface);
 	draw_clear_alpha(c_black,0);
@@ -143,4 +139,105 @@ function HexagonSprite(_sprite) {
 	sprite_delete(_sprite);
 	surface_free(_surface);
 	return [_sprite1,_sprite2];
+}
+
+function Transition(_change = false) {
+	if !SYNC return;
+	with(oGameManager) {
+		if !surface_exists(transitionSurfacePing) transitionSurfacePing = surface_create(1920,1080);
+		if !surface_exists(transitionSurfacePong) transitionSurfacePong = surface_create(1920,1080);
+		transitionChange = _change;
+		transitionPercent = 0;
+		
+		if _change {
+			surface_set_target(transitionSurfacePing);
+			draw_sprite_ext(sDoomWall,0,0,0,1920/48,1080/40,0,c_white,1);
+			surface_reset_target();
+		} else {
+			var _surface = view_get_surface_id(0);
+			surface_set_target(transitionSurfacePing);
+			draw_surface(_surface == -1 ? application_surface : _surface,0,0);
+			surface_reset_target();
+		}
+	}
+	
+	if room == rGame and !_change {
+		global.roundStart = false;
+		global.gameOver = false;
+		global.scores = array_create(4,0);
+		global.spectate = noone;
+		global.time = 0;
+		global.camZoom = 0;
+		
+		instance_destroy(oPlayerDeath);
+		
+		with(oGameManager) {
+			stopTimer = false;
+			panelXPercent = -0.5;
+			recordPercent = 0;
+			hexPercent = 0;
+			textPercent = 0;
+			timeLeft = 10;
+			leave = false;
+		}
+		
+		with(oGlobalManager) {
+			number = 0;	
+			if global.numPlayers == 1 {
+				global.playerSprites = array_create(4,global.playerSprites[playerNum]);
+				playerNum = irandom(3);
+				global.playersConnected = array_create(4,false);
+				global.playersConnected[playerNum] = true;
+			}
+		}
+		
+		var _dir = random(360);
+	
+		with(oPlayer) {
+			visible = true;
+			dead = false;
+			deadObject = noone;
+			hSpd = 0;
+			vSpd = 0;
+			drawingLine = false;
+			x = round(room_width/2+lengthdir_x(1600,_dir));
+			y = round(room_height/2+lengthdir_y(1600,_dir));
+			_dir -= 360/global.numPlayers;
+			if global.numPlayers == 1 index = oGlobalManager.playerNum;
+		}
+		
+		with(oCamera) {
+			spectate = false;	
+			camX = follow.x - camW/2;
+			camY = follow.y - camH/2;
+		}
+		
+		with(oDoomWall) {
+			x = room_width/2;
+			y = room_height/2;
+
+			xTo = x;
+			yTo = y;
+
+			xstart = x;
+			ystart = y;
+			
+			in = true;
+			
+			wallLen = startMaxLen;
+			disappear = 0;
+			
+			rotation = 0;
+			maxLen = 0;
+			minLen = 0;
+			
+			wallPercent = 1;
+		}
+		
+		with(oProjectile) {
+			if created instance_destroy();	
+		}
+	} else if !_change and room != rGame {
+		room_goto(rGame);	
+	}
 }

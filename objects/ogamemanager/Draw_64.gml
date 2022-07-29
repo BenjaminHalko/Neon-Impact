@@ -1,14 +1,18 @@
 /// @desc Draw Time + Other On Screen Things
 
-enableLive;
+if room != rGame {
+	draw_set_font(GuiFont);
+	draw_text(64,64,"press space when you are all connected");
+	exit;
+}
+
+draw_set_font(GuiFont);
 
 if !global.gameOver {
-	var _camW = oCamera.camW;
-	var _camH = oCamera.camH;
 
 	var _alpha;
 	with(oPlayer) {
-		if (dead or point_in_rectangle(x,y,CamX-sprite_width/2,CamY-sprite_width/2,CamX+_camW+sprite_width/2,CamY+_camH+sprite_width/2)) continue;
+		if (dead or point_in_rectangle(x,y,CamX-sprite_width/2,CamY-sprite_width/2,CamX+CamW+sprite_width/2,CamY+CamH+sprite_width/2)) continue;
 
 		_alpha = 0.9;
 		if instance_exists(deadObject) {
@@ -19,7 +23,7 @@ if !global.gameOver {
 		else draw_set_colour(global.colours[index]);
 	
 		var _len = 0;
-		var _dir = point_direction(960,540,x-CamX,y-CamY);
+		var _dir = point_direction(CamW/2,CamH/2,x-CamX,y-CamY);
 	
 		if _dir > other.tanAngle and _dir <= 180-other.tanAngle _len = 500/dcos(_dir-90);
 		else if _dir > 180-other.tanAngle and _dir <= 180+other.tanAngle _len = 920/dcos(_dir-180);
@@ -44,7 +48,6 @@ if !global.gameOver {
 	draw_set_alpha(1);
 
 	// Some Lovely Text
-	draw_set_font(GuiFont);
 	draw_set_halign(fa_center);
 	draw_set_valign(fa_top);
 	draw_set_color(c_white);
@@ -82,7 +85,7 @@ if !global.gameOver {
 	draw_set_alpha(1);
 	
 	_hexX = lerp(2250,1500,animcurve_channel_evaluate(xMoveCurve,min(hexPercent,1))*animcurve_channel_evaluate(xMoveCurve,panelXPercent));
-	_y = 150 * animcurve_channel_evaluate(hexYCurve,max(hexPercent-1,0));
+	_y = 150 * animcurve_channel_evaluate(yHexCurve,max(hexPercent-1,0));
 	draw_primitive_begin(pr_trianglelist);
 	for(var i = 0; i < 6; i++) {
 		draw_vertex(_hexX,540);
@@ -104,9 +107,10 @@ if !global.gameOver {
 			draw_sprite_ext(sDefaultIcons,winOrder[0],_hexX+defaultIconSize/2,700-defaultIconSize/2,1,1,-90,c_white,animcurve_channel_evaluate(xMoveCurve,median(textPercent-2,1,0)));
 
 	// Not 1st Records
+	var _global = oGlobalManager.globalScores;
 	for(var i = 0; i < 3; i++) {
 		_player = winOrder[i+1];
-		if global.scores[_player] == 0 continue;
+		if global.scores[_player] == 0 and (!alone or array_length(_global) <= i) continue;
 		_percent = animcurve_channel_evaluate(xRecordCurve,min(1,recordPercent-0.8*(2-i)))
 		_scale = 1 - (i != 0) * 0.15 - (i == 2) * 0.1;
 		_x = _panelX - 1200 + 250 - 50 * i - 100 / _scale * (1 - _percent);
@@ -115,8 +119,9 @@ if !global.gameOver {
 		draw_sprite_ext(sRanking,0,_x+lengthdir_x(20,-30),_y+lengthdir_y(20,-30),_scale,_scale,0,global.colours[_player],_percent);
 		draw_sprite_ext(sRanking,0,_x,_y,_scale,_scale,0,c_black,_percent);
 		
-		if !sprite_exists(global.playerSprites[_player][0])
+		if !alone and !sprite_exists(global.playerSprites[_player][0]) {
 			draw_sprite_ext(sDefaultIcons,_player,_x+25*_scale,_y+15*_scale,100/defaultIconSize*_scale,100/defaultIconSize*_scale,0,c_white,_percent);
+		}
 	}
 	
 	if instance_exists(oRender) {
@@ -124,7 +129,7 @@ if !global.gameOver {
 		surface_set_target(oRender.guiSurface);
 	}
 	
-	if sprite_exists(global.playerSprites[winOrder[0]][0])
+	if sprite_exists(global.playerSprites[winOrder[0]][1])
 		draw_sprite_ext(global.playerSprites[winOrder[0]][1],0,_hexX-defaultIconSize/2,700-defaultIconSize/2,1,1,0,c_white,animcurve_channel_evaluate(xMoveCurve,median(textPercent-2,1,0)));
 	
 	//1st
@@ -133,7 +138,7 @@ if !global.gameOver {
 	draw_set_color(global.colours[winOrder[0]]);
 	gpu_set_tex_filter(false);
 	draw_set_alpha(animcurve_channel_evaluate(xMoveCurve,min(textPercent,1)));
-	draw_text_transformed(_hexX,220,"WINNER",1.5,1.5,0);
+	draw_text_transformed(_hexX,220,alone ? "SCORE" : "WINNER",1.5,1.5,0);
 	
 	draw_line_width(_hexX-200,280,_hexX+200,280,5);
 	draw_set_alpha(animcurve_channel_evaluate(xMoveCurve,median(textPercent-1,1,0)));
@@ -144,36 +149,110 @@ if !global.gameOver {
 	
 	draw_set_valign(fa_top);
 	draw_text_transformed(_hexX,410,string(global.scores[winOrder[0]] div 60)+":"+string_replace(string_format(global.scores[winOrder[0]] % 60,2,2)," ","0"),1.5,1.5,0);
-	
-	gpu_set_tex_filter(true);
 	draw_set_alpha(1);
+	
+	//Next Round In:
+	draw_set_color(c_black);
+	draw_set_halign(fa_left);
+
+	draw_text_transformed(_panelX-1100,40,"Next Round In: "+string_replace(string_format(floor(max(0,timeLeft)),2,0)," ","0"),1.5,1.5,0);
+	if global.numPlayers == 1 draw_text(_panelX-1000,100,"Or Click Anywhere");
+
+	gpu_set_tex_filter(true);
 	
 	for(var i = 0; i < 3; i++) {
 		_percent = animcurve_channel_evaluate(xRecordCurve,min(1,recordPercent-0.8*(2-i)));
 		_player = winOrder[i+1];
-		if global.scores[_player] == 0 continue;
+		if global.scores[_player] == 0 and (!alone or array_length(_global) <= i) continue;
 		_scale = 1 - (i != 0) * 0.15 - (i == 2) * 0.1;
 		_x = _panelX - 1200 + 250 - 50 * i - 100 / _scale * (1 - _percent);
 		_y = 280+200*i+30*(i != 0);
 		draw_set_alpha(_percent);
 		
-		if sprite_exists(global.playerSprites[_player][0])
+		var _score = global.scores[_player];
+		var _name = global.names[_player];
+		
+		if alone {
+			_score = _global[i].points;
+			_name = _global[i].username;
+			draw_sprite_ext(_global[i].sprite,0,_x+25*_scale,_y+15*_scale,100/defaultIconSize*_scale,100/defaultIconSize*_scale,0,c_white,_percent);
+		} else if sprite_exists(global.playerSprites[_player][0])
 			draw_sprite_ext(global.playerSprites[_player][0],0,_x+25*_scale,_y+15*_scale,100/defaultIconSize*_scale,100/defaultIconSize*_scale,0,c_white,_percent);
 		
 		draw_set_colour(global.colours[_player]);
 		gpu_set_tex_filter(false);
 		draw_set_halign(fa_right);
 		draw_set_valign(fa_bottom);
-		draw_text_transformed(_x+550*_scale	,_y+120*_scale,string(global.scores[_player] div 60)+":"+string_replace(string_format(global.scores[_player] % 60,2,2)," ","0"),_scale,_scale,0);
+		draw_text_transformed(_x+550*_scale	,_y+120*_scale,string(_score div 60)+":"+string_replace(string_format(_score % 60,2,2)," ","0"),_scale,_scale,0);
 		draw_set_halign(fa_left);
 		draw_set_valign(fa_top);
 		
-		_textScale = min(1,470/string_width(global.names[_player])) * 0.9 * _scale;
+		_textScale = min(1,470/string_width(_name)) * 0.9 * _scale;
 		
-		draw_text_transformed(_x+140*_scale,_y+20*_scale,global.names[_player],_textScale,_textScale,0);
+		draw_text_transformed(_x+140*_scale,_y+20*_scale,_name,_textScale,_textScale,0);
 		
 		gpu_set_tex_filter(true);
 	}
 	
 	draw_set_alpha(1);
+}
+
+//Transition
+if surface_exists(transitionSurfacePing) {
+	var _drawSurface = function() {
+		surface_set_target(transitionSurfacePong);
+		draw_clear_alpha(c_black,0);
+		
+		var _wallLen = lerp(-45,1600,transitionPercent);
+		var _x = 960;
+		var _y = 540;
+		var _len = max(0,_wallLen);
+		
+		if transitionChange {
+			for(var i = 0; i < 6; i++) {
+				draw_triangle(_x,_y,_x+lengthdir_x(_len,i*360/6+transitionDir),_y+lengthdir_y(_len,i*360/6+transitionDir),_x+lengthdir_x(_len,(i+1)*360/6+transitionDir),_y+lengthdir_y(_len,(i+1)*360/6+transitionDir),false);
+			}
+			
+			gpu_set_blendmode_ext(bm_dest_alpha,bm_inv_dest_alpha);
+			draw_surface(transitionSurfacePing,0,0);
+			gpu_set_blendmode(bm_normal);
+		} else {
+			draw_surface(transitionSurfacePing,0,0);
+			gpu_set_blendmode(bm_subtract);
+			draw_set_color(c_black);
+			gpu_set_blendmode(bm_subtract);
+			for(var i = 0; i < 6; i++) {
+				draw_triangle(_x,_y,_x+lengthdir_x(_len,i*360/6+transitionDir),_y+lengthdir_y(_len,i*360/6+transitionDir),_x+lengthdir_x(_len,(i+1)*360/6+transitionDir),_y+lengthdir_y(_len,(i+1)*360/6+transitionDir),false);
+			}
+			gpu_set_blendmode(bm_normal);
+		}
+		
+		//Lines
+		draw_set_color(make_color_hsv(Wave(260,265,5,0)/360*255,255,255));
+			var _width = 45+min(0,_wallLen);
+			_len += _width;
+		for(var i = 0; i < 6; i++) {
+			draw_line_width(
+	
+			_x+lengthdir_x(_len,i*360/6+transitionDir)-lengthdir_x(_width/2,(i-1)*360/6+90+transitionDir),
+			_y+lengthdir_y(_len,i*360/6+transitionDir)-lengthdir_y(_width/2,(i-1)*360/6+90+transitionDir),
+			_x+lengthdir_x(_len,(i+1)*360/6+transitionDir)-lengthdir_x(_width/2,(i-1)*360/6+90+transitionDir),
+			_y+lengthdir_y(_len,(i+1)*360/6+transitionDir)-lengthdir_y(_width/2,(i-1)*360/6+90+transitionDir),
+	
+			_width);
+		}
+		surface_reset_target();
+		draw_surface(transitionSurfacePong,0,0);
+	}
+	
+	if instance_exists(oRender) {
+		surface_reset_target();
+		surface_set_target(oRender.viewSurface);
+		_drawSurface();
+		surface_reset_target();
+		surface_set_target(oRender.guiSurface);
+		gpu_set_blendmode(bm_subtract);
+		draw_surface_ext(transitionSurfacePong,0,0,1,1,0,c_black,1);
+		gpu_set_blendmode(bm_normal);
+	} else _drawSurface();
 }

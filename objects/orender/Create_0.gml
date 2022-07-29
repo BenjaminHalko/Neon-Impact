@@ -6,15 +6,16 @@ guiSurface = -1;
 surfacePing = -1;
 surfacePong = -1;
 
-//Disable Render if 
+//instance_deactivate_object(id);
+//exit;
+
+//Disable Render if Using OperaGX mobile
 if os_type == os_operagx {
 	var _info = os_get_info();
 	var _disable = _info[? "mobile"];
 	ds_map_destroy(_info);
 	
 	if _disable {
-		ds_map_destroy(_info);
-		gpu_set_tex_filter(false);
 		instance_deactivate_object(id);
 		exit;
 	}

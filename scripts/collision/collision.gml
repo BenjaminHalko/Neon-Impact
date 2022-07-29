@@ -6,7 +6,11 @@ function Collision(_collider,_restitution) {
 	
 	
 	var _v1 = dot_product(hSpd,vSpd,_x,_y);
-	var _v2 = dot_product(_collider.hSpd,_collider.vSpd,_x,_y);
+	var _v2;
+	
+	if _collider.object_index != oWall {
+		_v2 = dot_product(_collider.hSpd,_collider.vSpd,_x,_y);
+	} else _v2 = 0;
 	
 	if sign(_v1) != 1 and sign(_v2) != 1 return;
 	
@@ -31,9 +35,10 @@ function Collision(_collider,_restitution) {
 	vSpd += _y * (_len1 - _v1);
 	
 	_collider.hSpd += _x * (_len2 - _v2);
-	_collider.vSpd += _y * (_len2 - _v2);
 	
-	//Change Launch Dir
 	if object_index != oPlayer or !drawingLine launchDir = point_direction(0,0,hSpd,vSpd);
-	if _collider.object_index != oWall _collider.launchDir = point_direction(0,0,hSpd,vSpd);
+	if _collider.object_index != oWall {
+		_collider.vSpd += _y * (_len2 - _v2);
+		_collider.launchDir = point_direction(0,0,hSpd,vSpd);
+	}
 }

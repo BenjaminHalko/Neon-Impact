@@ -15,3 +15,6 @@ spectate = false;
 shakeRemain = 0;
 shakeLength = 0;
 shakeMagnitude = 0;
+
+camWMax = room_width-500;
+camHMax = camWMax/16*9;

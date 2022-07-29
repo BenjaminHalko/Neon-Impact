@@ -1,7 +1,5 @@
 /// @desc Draw Wall
 
-enableLive;
-
 surface_set_target(surface);
 draw_sprite_ext(sDoomWall,0,0,0,room_width/48,room_height/40,0,c_white,1);
 

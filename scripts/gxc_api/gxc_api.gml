@@ -344,7 +344,7 @@ function __gxc_callback_asyncListener(_payload, _callback) {
 	
 	// Check if the result is not empty before trying to parse it
 	var _result = _payload[? "result"];
-	if (_result != "") {
+	if (_result != "" and _result != undefined) {
 		_result = json_parse(_result);
 	}
 	else _result = {};

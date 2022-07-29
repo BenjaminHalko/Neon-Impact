@@ -1,10 +1,10 @@
 /// @desc Move Wall
 
-enableLive;
-
 if PAUSE exit;
 
 if !surface_exists(surface) surface = surface_create(room_width,room_height);
+
+if !global.roundStart exit;
 
 if global.gameOver {
 	rotation -= 0.1;
@@ -14,74 +14,78 @@ if global.gameOver {
 }
 
 #region Collision
-wallLen = lerp(minLen,maxLen,animcurve_channel_evaluate(curve,wallPercent));
+wallLen = lerp(startMinLen-minLen,startMaxLen-maxLen,animcurve_channel_evaluate(curve,wallPercent));
 
-with (oPlayer) {
-	if !visible continue;
+if !debug {
+	with (oPlayer) {
+		if !visible continue;
 	
-	var _dead = true;
+		var _dead = true;
 	
-	for(var i = 0; i < 6; i++) {
-		if point_in_triangle(x,y,other.x,other.y,other.x+lengthdir_x(other.wallLen - 45,i*360/6+other.rotation),other.y+lengthdir_y(other.wallLen - 45,i*360/6+other.rotation),other.x+lengthdir_x(other.wallLen - 45,(i+1)*360/6+other.rotation),other.y+lengthdir_y(other.wallLen - 45,(i+1)*360/6+other.rotation)) {
-			_dead = false;
-			break;
-		}
-	}
-	
-	if _dead and SYNC {
-		deadObject = instance_create_layer(x,y,"Dead",oPlayerDeath);
-		with deadObject {
-			index = other.index;
-			image_angle = other.image_angle;
-		}
-		for(var i = -1; i <= 1; i++) {
-			with(instance_create_layer(x,y,"Projectiles",oProjectile)) {
-				noProjectileCollision = true;
-				image_angle = other.image_angle;
-				colour = global.colours[other.index];
-				colourAmount = 1;
-				var _dir = point_direction(x,y,oDoomWall.x,oDoomWall.y)+45*i;
-				hSpd = lengthdir_x(12,_dir);
-				vSpd = lengthdir_y(12,_dir);
-				image_xscale = 64/sprite_width;
-				image_yscale = image_xscale;
-				mass = 64/96;
-			}
-		}
-		visible = false;
-		
-		global.scores[index] = global.time;
-		if player_local {
-			try { gxc_challenge_submit_score(global.time*1000,undefined,{challengeId: CHALLENGEID}); }
-			catch(_error) { show_debug_message(_error); }
-		}
-		
-		oGameManager.stopTimer = true;
-		with(oPlayer) {
-			if visible {
-				oGameManager.stopTimer = false;
+		for(var i = 0; i < 6; i++) {
+			if point_in_triangle(x,y,other.x,other.y,other.x+lengthdir_x(other.wallLen - 45,i*360/6+other.rotation),other.y+lengthdir_y(other.wallLen - 45,i*360/6+other.rotation),other.x+lengthdir_x(other.wallLen - 45,(i+1)*360/6+other.rotation),other.y+lengthdir_y(other.wallLen - 45,(i+1)*360/6+other.rotation)) {
+				_dead = false;
 				break;
 			}
 		}
-	}
-}
-
-with(oPlayer) {
-	var _collide = true;
 	
-	for(var i = 0; i < 6; i++) {
-		if point_in_triangle(x,y,other.x,other.y,other.x+lengthdir_x(other.wallLen,i*360/6+other.rotation),other.y+lengthdir_y(other.wallLen,i*360/6+other.rotation),other.x+lengthdir_x(other.wallLen,(i+1)*360/6+other.rotation),other.y+lengthdir_y(other.wallLen,(i+1)*360/6+other.rotation)) {
-			_collide = false;
-			break;
+		if _dead and SYNC {
+			deadObject = instance_create_layer(x,y,"Dead",oPlayerDeath);
+			with deadObject {
+				index = other.index;
+				image_angle = other.image_angle;
+			}
+			
+			var _dir = ((360 + point_direction(other.x,other.y,x,y) - other.rotation) % 360 div 60) * 60 + other.rotation % 360 - 150;
+			for(var i = -1; i <= 1; i++) {
+				with(instance_create_layer(x,y,"Projectiles",oProjectile)) {
+					created = true;
+					noProjectileCollision = true;
+					image_angle = other.image_angle;
+					colour = global.colours[other.index];
+					colourAmount = 1;
+					hSpd = lengthdir_x(12,_dir+45*i);
+					vSpd = lengthdir_y(12,_dir+45*i);
+					image_xscale = 64/sprite_width;
+					image_yscale = image_xscale;
+					mass = 64/96;
+				}
+			}
+			visible = false;
+		
+			global.scores[index] = global.time;
+			if player_local {
+				try { gxc_challenge_submit_score(global.time*1000,undefined,{challengeId: CHALLENGEID}); }
+				catch(_error) { show_debug_message(_error); }
+			}
+		
+			oGameManager.stopTimer = true;
+			with(oPlayer) {
+				if visible {
+					oGameManager.stopTimer = false;
+					break;
+				}
+			}
 		}
 	}
+} else {
+	with(oPlayer) {
+		var _collide = true;
 	
-	if !_collide continue;
+		for(var i = 0; i < 6; i++) {
+			if point_in_triangle(x,y,other.x,other.y,other.x+lengthdir_x(other.wallLen,i*360/6+other.rotation),other.y+lengthdir_y(other.wallLen,i*360/6+other.rotation),other.x+lengthdir_x(other.wallLen,(i+1)*360/6+other.rotation),other.y+lengthdir_y(other.wallLen,(i+1)*360/6+other.rotation)) {
+				_collide = false;
+				break;
+			}
+		}
 	
-	var _angle = ((360 + point_direction(other.x,other.y,x,y) - other.rotation) % 360 div 60) * 60 + other.rotation % 360 - 150;
+		if !_collide continue;
+	
+		var _angle = ((360 + point_direction(other.x,other.y,x,y) - other.rotation) % 360 div 60) * 60 + other.rotation % 360 - 150;
 
-	hSpd = lengthdir_x(30,_angle);
-	vSpd = lengthdir_y(30,_angle);
+		hSpd = lengthdir_x(30,_angle);
+		vSpd = lengthdir_y(30,_angle);
+	}
 }
 
 with(oProjectile) {
@@ -111,19 +115,24 @@ with(oProjectile) {
 
 #region Moving
 rotation -= 0.1;
-if !oGameManager.stopTimer wallPercent = Approach(wallPercent,in,0.001);
+var _num = -1;
+with(oPlayer) {
+	if visible _num++;
+}
+wallSpd = Approach(wallSpd,wallSpdArray[max(0,_num)],0.0001);
+if !oGameManager.stopTimer wallPercent = Approach(wallPercent,in,wallSpd);
 if wallPercent == in {
 	in = !in;
 	xstart = x;
 	ystart = y;
 	if in {
-		maxLen = max(maxLen-100,maxLenMin);
-		xTo = irandom_range(maxLen+100,room_width-maxLen-100);
-		yTo = irandom_range(maxLen+100,room_height-maxLen-100);
+		maxLen = max(maxLen+100,maxLenMax)+200*(3-max(0,_num));
+		xTo = irandom_range(startMaxLen-maxLen+100,room_width-startMaxLen+maxLen-100);
+		yTo = irandom_range(startMaxLen-maxLen+100,room_height-startMaxLen+maxLen-100);
 	} else {
-		minLen = max(minLen-100,minLenMin);
-		xTo = irandom_range(minLen+100,room_width-minLen-100);
-		yTo = irandom_range(minLen+100,room_height-minLen-100);
+		minLen = max(minLen+100,minLenMax)+100*(3-max(0,_num));
+		xTo = irandom_range(startMinLen-minLen+100,room_width-startMinLen+minLen-100);
+		yTo = irandom_range(startMinLen-minLen+100,room_height-startMinLen+minLen-100);
 	}
 }
 

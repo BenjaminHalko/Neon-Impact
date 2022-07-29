@@ -1,5 +1,4 @@
 {
-  "name": "DoomCurve",
   "function": 2,
   "channels": [
     {"colour":4290799884,"visible":true,"points":[
@@ -8,10 +7,11 @@
       ],"resourceVersion":"1.0","name":"curve1","tags":[],"resourceType":"GMAnimCurveChannel",},
   ],
   "parent": {
-    "name": "More",
-    "path": "folders/Entities/More.yy",
+    "name": "Doom Wall",
+    "path": "folders/Entities/Doom Wall.yy",
   },
   "resourceVersion": "1.2",
+  "name": "DoomCurve",
   "tags": [],
   "resourceType": "GMAnimCurve",
 }

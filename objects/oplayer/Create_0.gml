@@ -4,13 +4,18 @@ index = 0;
 /// feather disable GM1013
 index = player_id;
 // Feather disable once GM1011
-if player_local oCamera.follow = id;
+if player_local {
+	with(oCamera) {
+		follow = other.id;
+		camX = follow.x - camW/2;
+		camY = follow.y - camH/2;
+	}
+}
 /// feather enable GM1013
 
 if global.multiplayer {
-	if player_type == "User" {
-		global.names[index] = "Benjamin";//player_name;
-	}
+	var _info = rollback_get_info(index);
+	if _info.player_type == "User" global.names[index] = _info.player_name;
 }
 
 image_angle = irandom(360);
@@ -34,8 +39,3 @@ hSpd = 0;
 vSpd = 0;
 
 collisionWidth = round(bbox_right-bbox_left);
-
-x = room_width/2+500;
-y = room_height/2;
-
-x -= 100 * index;

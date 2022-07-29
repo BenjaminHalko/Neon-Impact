@@ -4,7 +4,7 @@ mass = 100000;
 hSpd = 0;
 vSpd = 0;
 
-collisionWidth = round(bbox_right-bbox_left);
+collisionWidth = 90;
 
 colour = c_white;
 colourAmount = 0;

@@ -3,13 +3,13 @@
 //Spectate
 if spectate {
 	if instance_exists(global.spectate) {
-		targetX = global.spectate.x-camW/2;
-		targetY = global.spectate.y-camH/2;
+		targetX = global.spectate.x-1920/2;
+		targetY = global.spectate.y-1080/2;
 	}
 }
 else if instance_exists(follow) { //Update target
-	targetX = follow.x-camW/2;
-	targetY = follow.y-camH/2;
+	targetX = follow.x-1920/2;
+	targetY = follow.y-1080/2;
 }
 
 //Move camera to target
