@@ -2,9 +2,15 @@
 
 if PAUSE exit;
 
-if !surface_exists(surface) surface = surface_create(room_width,room_height);
+if !surface_exists(surface) surface = surface_create(1920,1080);
 
-if !global.roundStart exit;
+if !global.roundStart {
+	if !surface_exists(fullScreenSurface) {
+		fullScreenSurface = surface_create(room_width,room_height);
+		drawWall(0,0,fullScreenSurface,room_width,room_height);
+	}
+	exit;
+}
 
 if global.gameOver {
 	rotation -= 0.1;
@@ -36,19 +42,32 @@ if !debug {
 				image_angle = other.image_angle;
 			}
 			
+			var _num = 0;
+			with(oPlayer) {
+				if visible _num++
+			}
+			
 			var _dir = ((360 + point_direction(other.x,other.y,x,y) - other.rotation) % 360 div 60) * 60 + other.rotation % 360 - 150;
 			for(var i = -1; i <= 1; i++) {
-				with(instance_create_layer(x,y,"Projectiles",oProjectile)) {
-					created = true;
-					noProjectileCollision = true;
-					image_angle = other.image_angle;
-					colour = global.colours[other.index];
-					colourAmount = 1;
-					hSpd = lengthdir_x(12,_dir+45*i);
-					vSpd = lengthdir_y(12,_dir+45*i);
-					image_xscale = 64/sprite_width;
-					image_yscale = image_xscale;
-					mass = 64/96;
+				if i == 0 and _num == 2 and !instance_exists(oBot) {
+					with(instance_create_layer(x,y,"Players",oBot)) {
+						scale = 0;
+						hSpd = lengthdir_x(13,_dir+45*i);
+						vSpd = lengthdir_y(13,_dir+45*i);
+					}
+				} else {
+					with(instance_create_layer(x,y,"Projectiles",oProjectile)) {
+						created = true;
+						noProjectileCollision = true;
+						image_angle = other.image_angle;
+						colour = global.colours[other.index];
+						colourAmount = 1;
+						hSpd = lengthdir_x(13,_dir+45*i);
+						vSpd = lengthdir_y(13,_dir+45*i);
+						image_xscale = 64/sprite_width;
+						image_yscale = image_xscale;
+						mass = 64/96;
+					}
 				}
 			}
 			visible = false;
@@ -59,13 +78,7 @@ if !debug {
 				catch(_error) { show_debug_message(_error); }
 			}
 		
-			oGameManager.stopTimer = true;
-			with(oPlayer) {
-				if visible {
-					oGameManager.stopTimer = false;
-					break;
-				}
-			}
+			if _num == 0 oGameManager.stopTimer = true;
 		}
 	}
 } else {
@@ -108,6 +121,23 @@ with(oProjectile) {
 	var _dir = point_direction(0,0,hSpd,vSpd);
 	_dir += angle_difference(_dir, _angle) * 2 * sign(_angle - _dir) - 180;
 	
+	if _spd < 10 {
+		_spd = 20;
+		_dir = _angle;
+	}
+	
+	while(_collide) {
+		x += lengthdir_x(1,_angle);
+		y += lengthdir_y(1,_angle);
+		
+		for(var i = 0; i < 6; i++) {
+			if point_in_triangle(x,y,other.x,other.y,other.x+lengthdir_x(other.wallLen,i*360/6+other.rotation),other.y+lengthdir_y(other.wallLen,i*360/6+other.rotation),other.x+lengthdir_x(other.wallLen,(i+1)*360/6+other.rotation),other.y+lengthdir_y(other.wallLen,(i+1)*360/6+other.rotation)) {
+				_collide = false;
+				break;
+			}
+		}	
+	}
+	
 	hSpd = lengthdir_x(_spd,_dir);
 	vSpd = lengthdir_y(_spd,_dir);
 }
@@ -130,7 +160,7 @@ if wallPercent == in {
 		xTo = irandom_range(startMaxLen-maxLen+100,room_width-startMaxLen+maxLen-100);
 		yTo = irandom_range(startMaxLen-maxLen+100,room_height-startMaxLen+maxLen-100);
 	} else {
-		minLen = max(minLen+100,minLenMax)+100*(3-max(0,_num));
+		minLen = max(minLen+100,minLenMax)+60*(3-max(0,_num));
 		xTo = irandom_range(startMinLen-minLen+100,room_width-startMinLen+minLen-100);
 		yTo = irandom_range(startMinLen-minLen+100,room_height-startMinLen+minLen-100);
 	}

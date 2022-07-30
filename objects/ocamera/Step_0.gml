@@ -16,10 +16,6 @@ else if instance_exists(follow) { //Update target
 camX += (targetX - camX) / 20;
 camY += (targetY - camY) / 20;
 
-//Don't Move Out Of Bounds
-camX = clamp(camX,0,room_width-camW);
-camY = clamp(camY,0,room_height-camH);
-
 //Shake
 shakeRemain = max(0, shakeRemain - ((1/shakeLength) * shakeMagnitude));
 

@@ -1,15 +1,5 @@
 /// @desc Initialize Multiplayer
 
-global.camZoom = 0;
-global.numPlayers = 1;
-global.names = ["PLAYER 1","PLAYER 2", "PLAYER 3", "PLAYER 4"];
-global.playerSprites = array_create(4,0);
-global.playersConnected = [false,false,false,false];
-
-for (var i = 0; i < 4; i++) {
-	global.playerSprites[i] = [noone,noone];
-}
-
 if global.multiplayer {
 	try {
 		rollback_define_input({
@@ -40,8 +30,8 @@ if !global.multiplayer {
 	gxc_profile_get_info(function(_status, _result) {
 		try {
 			if (_status == 200) {
-				global.names[oGlobalManager.playerNum] = _result.data.username;
-				global.playerSprites[oGlobalManager.playerNum] = sprite_add(_result.data.avatarUrl,0,false,false,0,0);
+				global.names = array_create(4,_result.data.username);
+				global.playerSprites[oGlobalManager.playerNum][0] = sprite_add(_result.data.avatarUrl,0,false,false,0,0);
 			} 
 		} catch(_error) { 
 			show_debug_message(_error);
@@ -60,6 +50,8 @@ spectatorNumber = 0;
 rollbackSubtrackFrame = 0;
 
 tanAngle = darctan(540/960);
+
+wait = 0;
 
 //GameOver
 global.gameOver = false;
@@ -83,6 +75,6 @@ winOrder = [0,1,2,3];
 //Transition
 transitionPercent = 0;
 transitionSurfacePing = -1;
-transitionSurfacePong = -1;
+transitionSurfacePong = surface_create(1920,1080);
 transitionChange = false;
 transitionDir = 0;

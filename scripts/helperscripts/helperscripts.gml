@@ -155,9 +155,12 @@ function Transition(_change = false) {
 			surface_reset_target();
 		} else {
 			var _surface = view_get_surface_id(0);
-			surface_set_target(transitionSurfacePing);
-			draw_surface(_surface == -1 ? application_surface : _surface,0,0);
-			surface_reset_target();
+			_surface = _surface == -1 ? application_surface : _surface;
+			if surface_exists(_surface) {
+				surface_set_target(transitionSurfacePing);
+				draw_surface(_surface,0,0);
+				surface_reset_target();
+			}
 		}
 	}
 	
@@ -202,9 +205,20 @@ function Transition(_change = false) {
 			drawingLine = false;
 			x = round(room_width/2+lengthdir_x(1600,_dir));
 			y = round(room_height/2+lengthdir_y(1600,_dir));
-			_dir -= 360/global.numPlayers;
+			_dir -= 360/max(2,global.numPlayers);
 			if global.numPlayers == 1 index = oGlobalManager.playerNum;
 		}
+		
+		if global.numPlayers == 1 {
+			if !instance_exists(oBot) instance_create_layer(0,0,"Players",oBot);
+			with(oBot) {
+				hSpd = 0;
+				vSpd = 0;
+				x = round(room_width/2+lengthdir_x(1600,_dir));
+				y = round(room_height/2+lengthdir_y(1600,_dir));
+				timer = 60;
+			}
+		} else instance_destroy(oBot);
 		
 		with(oCamera) {
 			spectate = false;	

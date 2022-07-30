@@ -9,5 +9,9 @@ for(var i = 0; i < 4; i++) {
 		player_id: i,
 		player_local: oGlobalManager.playerNum == i
 	});
-	_dir -= 360/global.numPlayers;
+	_dir -= 360/max(2,global.numPlayers);
+}
+
+if global.numPlayers == 1 {
+	instance_create_layer(round(room_width/2+lengthdir_x(1600,_dir)),round(room_height/2+lengthdir_y(1600,_dir)),"Players",oBot);
 }

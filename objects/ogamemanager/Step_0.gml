@@ -1,6 +1,6 @@
-/// @desc Game Managemen
+/// @desc Game Management
 
-if PAUSE and (keyboard_check_pressed(vk_space) or global.numPlayers >= 2) rollback_start_game();
+if PAUSE and (mouse_check_button_pressed(mb_left)) rollback_start_game();
 
 if PAUSE exit;
 
@@ -8,7 +8,7 @@ if PAUSE exit;
 if room == rGame {
 	if global.roundStart {
 		if !stopTimer {
-			if global.multiplayer global.time = max(0,(rollback_current_frame-rollbackSubtrackFrame)/60);
+			if global.multiplayer global.time = max(0,(rollback_confirmed_frame-rollbackSubtrackFrame)/60);
 			else global.time += 1/60;
 		}
 
@@ -45,7 +45,7 @@ if room == rGame {
 		}
 
 		if global.gameOver {
-			if global.numPlayers == 1 and panelXPercent > 0 and mouse_check_button_pressed(mb_left) leave = true;
+			if global.numPlayers == 1 and mouse_check_button_pressed(mb_left) leave = true;
 			if !leave {
 				panelXPercent = Approach(panelXPercent,1,0.015);
 				if panelXPercent == 1 {
@@ -80,10 +80,15 @@ if room == rGame {
 		}
 		if global.camZoom == 1 and SYNC {
 			global.roundStart = true;
-			if global.multiplayer rollbackSubtrackFrame = rollback_confirmed_frame;	
+			if global.multiplayer rollbackSubtrackFrame = rollback_confirmed_frame;
+			with(oDoomWall) {
+				surface_resize(surface,1920,1080);
+			}
 		}
 	}
-} else if !surface_exists(transitionSurfacePing) { //Title Screen
+} else if !oTitle.multiplayerStart and oTitle.towerPercent != 0 {
+	oTitle.multiplayerStart = true;
+} else if !surface_exists(transitionSurfacePing) and oTitle.buttonMovePercent >= 0.7 {
 	Transition(true);
 }
 
