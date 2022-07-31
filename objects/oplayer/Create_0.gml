@@ -38,4 +38,7 @@ mass = 1;
 hSpd = 0;
 vSpd = 0;
 
+scale = 1;
+scaleSpd = 0;
+
 collisionWidth = round(bbox_right-bbox_left);

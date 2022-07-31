@@ -41,6 +41,7 @@ if _input.mouseLeft {
 		var _speed = launchSpd * min(1,launchDist/launchLenMax);
 		hSpd = lengthdir_x(_speed,launchDir) + hSpd / 2;
 		vSpd = lengthdir_y(_speed,launchDir) + vSpd / 2;
+		scale = max(0.5,1-sqrt(sqr(hSpd)+sqr(vSpd))/50);
 	}
 }
 
@@ -52,6 +53,8 @@ vSpd = Approach(vSpd,0,abs(lengthdir_y(FRIC,_dir)));
 
 hSpd = min(abs(hSpd),abs(lengthdir_x(maxSpd,_dir)))*sign(hSpd);
 vSpd = min(abs(vSpd),abs(lengthdir_y(maxSpd,_dir)))*sign(vSpd);
+
+scale = ApproachFade(scale,min(1,1-(max(0,sqrt(sqr(hSpd)+sqr(vSpd))-15)/(maxSpd-15))/2),0.02,0.8);
 
 if !drawingLine and hSpd != 0 and vSpd != 0 launchDir = _dir;
 

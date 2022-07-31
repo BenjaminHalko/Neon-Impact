@@ -2,13 +2,15 @@
 
 if global.multiplayer {
 	try {
+		rollback_use_manual_start();
+		
 		rollback_define_input({
 			mouseLeft: mb_left,
 			mouseX: m_axisx_gui,
 			mouseY: m_axisy_gui
 		});
 		
-		var _test = true;
+		var _test = os_type != os_operagx;
 
 		if !rollback_join_game() {
 			rollback_create_game(4,_test);
@@ -16,6 +18,7 @@ if global.multiplayer {
 		if _test {
 			global.playersConnected = array_create(4,true);
 			global.numPlayers = 4;
+			oTitle.connected = true;
 		}
 	} catch(_error) {
 		show_debug_message(_error);

@@ -1,4 +1,4 @@
-/// @desc
+/// @desc Initialize Evil Fellow
 
 event_inherited();
 
@@ -10,3 +10,7 @@ colour = global.colours[4];
 
 launchDirSpd = 0;
 scale = 1;
+
+fast = 0;
+
+allowGrow = true;

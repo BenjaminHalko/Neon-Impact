@@ -1,6 +1,6 @@
 /// @desc Initialize Non-Synced Variables
 
-#macro FRIC 0.15
+#macro FRIC 0.125
 #macro CamX oCamera.camX
 #macro CamY oCamera.camY
 #macro CamW oCamera.camW

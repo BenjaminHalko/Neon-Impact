@@ -32,3 +32,7 @@ draw_surface_ext(viewSurface,0,0,1,1,0,make_color_hsv(0,0,255*0.55),1);
 gpu_set_blendmode(bm_normal);
 
 draw_surface(guiSurface,0,0);
+
+if room == rTitle {
+	with(oTitle) drawTitleOutline();
+}

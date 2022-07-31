@@ -34,10 +34,10 @@ function Collision(_collider,_restitution) {
 	hSpd += _x * (_len1 - _v1);
 	vSpd += _y * (_len1 - _v1);
 	
-	_collider.hSpd += _x * (_len2 - _v2);
-	
+
 	if object_index != oPlayer or !drawingLine launchDir = point_direction(0,0,hSpd,vSpd);
 	if _collider.object_index != oWall {
+		_collider.hSpd += _x * (_len2 - _v2);
 		_collider.vSpd += _y * (_len2 - _v2);
 		_collider.launchDir = point_direction(0,0,hSpd,vSpd);
 	}

@@ -78,7 +78,7 @@ if !debug {
 				catch(_error) { show_debug_message(_error); }
 			}
 		
-			if _num == 0 oGameManager.stopTimer = true;
+			if _num == 1 oGameManager.stopTimer = true;
 		}
 	}
 } else {

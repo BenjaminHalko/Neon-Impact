@@ -1,8 +1,9 @@
 /// @desc Game Management
 
-if PAUSE and (mouse_check_button_pressed(mb_left)) rollback_start_game();
-
-if PAUSE exit;
+if PAUSE {
+	if mouse_check_button_pressed(mb_left) rollback_start_game();
+	exit;
+}
 
 // GamePlay Stuff
 if room == rGame {
@@ -44,8 +45,8 @@ if room == rGame {
 			}
 		}
 
-		if global.gameOver {
-			if global.numPlayers == 1 and mouse_check_button_pressed(mb_left) leave = true;
+		if global.numPlayers == 1 and oGlobalManager.number > 2 and mouse_check_button_pressed(mb_left) leave = true;
+		if global.gameOver or leave {
 			if !leave {
 				panelXPercent = Approach(panelXPercent,1,0.015);
 				if panelXPercent == 1 {
@@ -86,8 +87,9 @@ if room == rGame {
 			}
 		}
 	}
-} else if !oTitle.multiplayerStart and oTitle.towerPercent != 0 {
+} else if (!oTitle.multiplayerStart and global.multiplayer) or (wait != 0 and wait != 1) {
 	oTitle.multiplayerStart = true;
+	wait = Approach(wait,1,0.02);
 } else if !surface_exists(transitionSurfacePing) and oTitle.buttonMovePercent >= 0.7 {
 	Transition(true);
 }

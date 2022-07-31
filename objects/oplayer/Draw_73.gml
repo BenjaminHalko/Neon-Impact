@@ -4,5 +4,7 @@
 // Feather disable GM1011
 if !player_local or !drawingLine or !global.roundStart exit;
 	
-var _len = min(launchLenMax,launchDist)/launchLenMax*400;
-draw_sprite_ext(sLine,0,x+lengthdir_x(56,launchDir),y+lengthdir_y(56,launchDir),_len/18,1,launchDir,global.colours[index],1);
+var _len = min(launchLenMax,launchDist)/launchLenMax*15;
+for(var i = 0; i < _len; i++) {
+	draw_sprite_ext(sArrow,0,x+lengthdir_x(56+i*18,launchDir),y+lengthdir_y(56+i*18,launchDir),1,1,launchDir,global.colours[index],min(1,_len-i));
+}

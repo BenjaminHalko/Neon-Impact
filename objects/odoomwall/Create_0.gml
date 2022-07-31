@@ -5,7 +5,7 @@ surface = surface_create(1920,1080);
 fullScreenSurface = surface_create(room_width,room_height);
 
 startMaxLen = room_width/2-100;
-startMinLen = 2500;
+startMinLen = 2300;
 
 rotation = 0;
 maxLen = 0;

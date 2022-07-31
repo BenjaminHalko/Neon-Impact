@@ -11,8 +11,8 @@ if (rollback_event_id == rollback_chat_message) {
 } else if (rollback_event_id == rollback_disconnected_from_peer) {
 	var _id = rollback_event_param.player_id;
 	global.playersConnected[_id] = false;
-	global.numPlayers--;
 	if room == rGame {
+		global.numPlayers--;
 		with(oPlayer) {
 			if index == _id {
 				if dead instance_destroy();
@@ -22,19 +22,33 @@ if (rollback_event_id == rollback_chat_message) {
 						index = other.index;
 						image_angle = other.image_angle;
 					}
-				
+					
+					var _num = 0;
+					with(oPlayer) {
+						if visible _num++
+					}
+					
 					var _dir = random(360);
-					for(var i = 0; i < 3; i++) {
-						with(instance_create_layer(x,y,"Projectiles",oProjectile)) {
-							noProjectileCollision = true;
-							image_angle = other.image_angle;
-							colour = global.colours[other.index];
-							colourAmount = 1;
-							hSpd = lengthdir_x(12,_dir+120*i);
-							vSpd = lengthdir_y(12,_dir+120*i);
-							image_xscale = 64/sprite_width;
-							image_yscale = image_xscale;
-							mass = 64/96;
+					for (var i = 0; i < 2; i++) {
+						if i == 0 and _num == 2 and !instance_exists(oBot) {
+							with(instance_create_layer(x,y,"Players",oBot)) {
+								scale = 0;
+								hSpd = lengthdir_x(13,_dir+120*i);
+								vSpd = lengthdir_y(13,_dir+120*i);
+							}
+						} else {
+							with(instance_create_layer(x,y,"Projectiles",oProjectile)) {
+								created = true;
+								noProjectileCollision = true;
+								image_angle = other.image_angle;
+								colour = global.colours[other.index];
+								colourAmount = 1;
+								hSpd = lengthdir_x(13,_dir+120*i);
+								vSpd = lengthdir_y(13,_dir+120*i);
+								image_xscale = 64/sprite_width;
+								image_yscale = image_xscale;
+								mass = 64/96;
+							}
 						}
 					}
 					visible = false;

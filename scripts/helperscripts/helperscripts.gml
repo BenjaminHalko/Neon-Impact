@@ -217,6 +217,7 @@ function Transition(_change = false) {
 				x = round(room_width/2+lengthdir_x(1600,_dir));
 				y = round(room_height/2+lengthdir_y(1600,_dir));
 				timer = 60;
+				fast = 0;
 			}
 		} else instance_destroy(oBot);
 		
