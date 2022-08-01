@@ -14,3 +14,5 @@ scale = 1;
 fast = 0;
 
 allowGrow = true;
+
+target = noone;

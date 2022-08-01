@@ -54,8 +54,6 @@ rollbackSubtrackFrame = 0;
 
 tanAngle = darctan(540/960);
 
-wait = 0;
-
 //GameOver
 global.gameOver = false;
 stopTimer = false;

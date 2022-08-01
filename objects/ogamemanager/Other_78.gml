@@ -54,6 +54,7 @@ if (rollback_event_id == rollback_chat_message) {
 					visible = false;
 		
 					global.scores[index] = global.time;
+					if _num <= 1 oGameManager.stopTimer = true;
 				}
 				
 				break;

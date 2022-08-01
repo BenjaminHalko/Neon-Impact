@@ -105,7 +105,7 @@ if room == rGame {
 		}
 	
 		//Panels
-		draw_set_alpha(0.4);
+		draw_set_alpha(0.3);
 		draw_set_color(global.colours[4]);
 		_panelX = 1150*animcurve_channel_evaluate(xMoveCurve,panelXPercent);
 		draw_triangle(_panelX,-1,_panelX-600,-1,_panelX-600,1080,false);
@@ -235,7 +235,7 @@ if surface_exists(transitionSurfacePing) {
 		surface_set_target(transitionSurfacePong);
 		draw_clear_alpha(c_black,0);
 		
-		var _wallLen = lerp(-45,1600,transitionPercent);
+		var _wallLen = lerp(-45,1600,median(0,1,transitionPercent));
 		var _x = 960;
 		var _y = 540;
 		var _len = max(0,_wallLen);

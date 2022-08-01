@@ -1,3 +1,4 @@
+
 /// @desc Game Management
 
 if PAUSE {
@@ -41,7 +42,10 @@ if room == rGame {
 					else if i != 0 alone = false;
 				}
 				ds_grid_destroy(_grid);
-				if alone recordPercent -= 0.8 * array_length(oGlobalManager.globalScores);
+				if alone {
+					recordPercent -= 0.8 * array_length(oGlobalManager.globalScores);
+					global.numPlayers = 1;
+				}
 			}
 		}
 
@@ -70,7 +74,10 @@ if room == rGame {
 		}
 	} else {
 		var _lastZoom = global.camZoom;
-		if !surface_exists(transitionSurfacePing) global.camZoom = Approach(global.camZoom,1,0.0075);
+		if !surface_exists(transitionSurfacePing) {
+			if global.camZoom == 0 audio_play_sound(snRoundStart,1,false,0.25);
+			global.camZoom = Approach(global.camZoom,1,0.0075);
+		}
 		var _percent = animcurve_channel_evaluate(other.xRecordCurve,global.camZoom);
 		with(oCamera) {
 			camX = lerp((room_width-camWMax)/2,targetX,_percent);
@@ -87,11 +94,9 @@ if room == rGame {
 			}
 		}
 	}
-} else if (!oTitle.multiplayerStart and global.multiplayer) or (wait != 0 and wait != 1) {
-	oTitle.multiplayerStart = true;
-	wait = Approach(wait,1,0.02);
 } else if !surface_exists(transitionSurfacePing) and oTitle.buttonMovePercent >= 0.7 {
-	Transition(true);
+	if oTitle.towerPercent != 0 oTitle.multiplayerStart = true;
+	Transition(true,oTitle.multiplayerStart);
 }
 
 //Transition

@@ -32,6 +32,8 @@ maxNum = 12;
 
 globalScores = []
 
+audioPlaying = ds_map_create();
+
 try {
 	gxc_challenge_get_global_scores(function(_status, _result) {
 		try {

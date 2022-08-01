@@ -1,5 +1,5 @@
 /// @desc
 
-if other.noProjectileCollision exit;
+if other.noProjectileCollision or !SYNC exit;
 
 event_inherited();

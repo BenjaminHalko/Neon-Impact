@@ -36,6 +36,9 @@ if !debug {
 		}
 	
 		if _dead and SYNC {
+			PlayAudio(snDeath,0.15,x,y);
+			audio_stop_sound(snBotCharge);
+			
 			deadObject = instance_create_layer(x,y,"Dead",oPlayerDeath);
 			with deadObject {
 				index = other.index;
@@ -78,7 +81,7 @@ if !debug {
 				catch(_error) { show_debug_message(_error); }
 			}
 		
-			if _num == 1 oGameManager.stopTimer = true;
+			if _num <= 1 oGameManager.stopTimer = true;
 		}
 	}
 } else {

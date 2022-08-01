@@ -16,3 +16,9 @@ if keyboard_check_pressed(vk_tab) or device_mouse_check_button_pressed(2,mb_left
 if room != rGame exit;
 
 if global.scores[playerNum] != 0 and number < maxNum and alarm[0] <= 0 alarm[0] = 30;
+
+if !ds_map_empty(audioPlaying) {
+	for(var i = ds_map_find_first(audioPlaying); i != undefined; i = ds_map_find_next(audioPlaying,i)) {
+		if !audio_is_playing(audioPlaying[? i]) ds_map_delete(audioPlaying,i);
+	}
+}

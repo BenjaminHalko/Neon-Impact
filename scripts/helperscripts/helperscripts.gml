@@ -107,6 +107,15 @@ function ScreenShake(_magnitude, _length,_x=-1,_y=-1) {
 	}
 }
 
+function PlayAudio(_sound,_vol=1,_x=-1,_y=-1,_pitch=1) {
+	if PAUSE return;
+	if (_x == -1 or point_in_rectangle(_x,_y,CamX,CamY,CamX+CamW,CamY+CamH) or (object_index == oPlayer and player_local)) and (!ds_map_exists(oGlobalManager.audioPlaying,id) or audio_get_name(oGlobalManager.audioPlaying[? id]) != audio_get_name(_sound)) {
+		var _audio = audio_play_sound(_sound,1,false,_vol,0,_pitch);
+		if ds_map_exists(oGlobalManager.audioPlaying,id) oGlobalManager.audioPlaying[? id] = _audio;
+		else ds_map_add(oGlobalManager.audioPlaying,id,_audio);
+	}
+}
+
 function HexagonSprite(_sprite) {
 	var _maxSize = sprite_get_width(sDefaultIcons);
 	var _width = sprite_get_width(_sprite);
@@ -141,13 +150,13 @@ function HexagonSprite(_sprite) {
 	return [_sprite1,_sprite2];
 }
 
-function Transition(_change = false) {
+function Transition(_change = false, _delayed = false) {
 	if !SYNC return;
 	with(oGameManager) {
 		if !surface_exists(transitionSurfacePing) transitionSurfacePing = surface_create(1920,1080);
 		if !surface_exists(transitionSurfacePong) transitionSurfacePong = surface_create(1920,1080);
 		transitionChange = _change;
-		transitionPercent = 0;
+		transitionPercent = -1*_change * _delayed;
 		
 		if _change {
 			surface_set_target(transitionSurfacePing);
@@ -203,8 +212,8 @@ function Transition(_change = false) {
 			hSpd = 0;
 			vSpd = 0;
 			drawingLine = false;
-			x = round(room_width/2+lengthdir_x(1600,_dir));
-			y = round(room_height/2+lengthdir_y(1600,_dir));
+			x = round(room_width/2+lengthdir_x(800,_dir));
+			y = round(room_height/2+lengthdir_y(800,_dir));
 			_dir -= 360/max(2,global.numPlayers);
 			if global.numPlayers == 1 index = oGlobalManager.playerNum;
 		}
