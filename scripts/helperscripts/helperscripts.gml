@@ -109,8 +109,8 @@ function ScreenShake(_magnitude, _length,_x=-1,_y=-1) {
 
 function PlayAudio(_sound,_vol=1,_x=-1,_y=-1,_pitch=1) {
 	if PAUSE return;
-	if (_x == -1 or point_in_rectangle(_x,_y,CamX,CamY,CamX+CamW,CamY+CamH) or (object_index == oPlayer and player_local)) and (!ds_map_exists(oGlobalManager.audioPlaying,id) or audio_get_name(oGlobalManager.audioPlaying[? id]) != audio_get_name(_sound)) {
-		var _audio = audio_play_sound(_sound,1,false,_vol,0,_pitch);
+	if (_x == -1 or point_in_rectangle(_x,_y,CamX,CamY,CamX+CamW,CamY+CamH) or (object_index == oPlayer and (player_local or (global.spectate == id and oCamera.spectate)))) and (!ds_map_exists(oGlobalManager.audioPlaying,id) or audio_get_name(oGlobalManager.audioPlaying[? id]) != audio_get_name(_sound)) {
+		var _audio = audio_play_sound(_sound,1,false,_vol*oGlobalManager.sfxVol,0,_pitch);
 		if ds_map_exists(oGlobalManager.audioPlaying,id) oGlobalManager.audioPlaying[? id] = _audio;
 		else ds_map_add(oGlobalManager.audioPlaying,id,_audio);
 	}
@@ -163,6 +163,7 @@ function Transition(_change = false, _delayed = false) {
 			draw_sprite_ext(sDoomWall,0,0,0,1920/48,1080/40,0,c_white,1);
 			surface_reset_target();
 		} else {
+			audio_play_sound(snRoundStart,1,false,0.25*oGlobalManager.sfxVol);
 			var _surface = view_get_surface_id(0);
 			_surface = _surface == -1 ? application_surface : _surface;
 			if surface_exists(_surface) {
@@ -263,5 +264,7 @@ function Transition(_change = false, _delayed = false) {
 		}
 	} else if !_change and room != rGame {
 		room_goto(rGame);	
+		audio_stop_sound(mMusic);
+		audio_stop_sound(mMusicIntro);
 	}
 }

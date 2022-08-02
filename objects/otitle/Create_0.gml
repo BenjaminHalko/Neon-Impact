@@ -31,9 +31,26 @@ connected = false;
 
 towerPercent = 0;
 
+towerScale = [1,1];
+
 towerRings = [0,-500,-100,-600];	
 
 curve = animcurve_get_channel(GameOverCurve,"xRecord");
+
+//Volume Control
+volX = 400;
+volWidth = 400;
+volY1 = 800;
+volY2 = 900;
+
+musicAlpha = 0.5;
+sfxAlpha = 0.5;
+
+musicClicked = false;
+sfxClicked = false;
+
+musicDraw = 1;
+sfxDraw = 1;
 
 //Title Shader
 var _uvs = sprite_get_uvs(sTitle,0);
@@ -80,3 +97,6 @@ if(gxc_get_query_param("roomUrl") != undefined) {
 	instance_create_layer(0,0,layer,oGameManager);
 	towerPercent += 0.01;
 }
+
+music = audio_play_sound(mMusicIntro,1,false,0.9*oGlobalManager.musicVol);
+lastPos = 0;

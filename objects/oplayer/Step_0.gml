@@ -42,7 +42,7 @@ if _input.mouseLeft {
 		hSpd = lengthdir_x(_speed,launchDir) + hSpd / 2;
 		vSpd = lengthdir_y(_speed,launchDir) + vSpd / 2;
 		scale = max(0.5,1-sqrt(sqr(hSpd)+sqr(vSpd))/50);
-		//PlayAudio(snLaunch,0.04+0.05*(player_local or global.spectate == id),x,y,random_range(0.8,1));
+		//PlayAudio(snLaunch,0.04+0.05*(player_local or (global.spectate == id and oCamera.spectate)),x,y,random_range(0.8,1));
 	}
 }
 

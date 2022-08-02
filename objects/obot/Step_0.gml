@@ -9,10 +9,7 @@ vSpd = Approach(vSpd,0,abs(lengthdir_y(FRIC,_dir)));
 hSpd = min(abs(hSpd),abs(lengthdir_x(maxSpd,_dir)))*sign(hSpd);
 vSpd = min(abs(vSpd),abs(lengthdir_y(maxSpd,_dir)))*sign(vSpd);
 
-var _vol = max(0,2-max(1000,point_distance(x,y,CamX+CamW/2,CamY+CamH/2))/1000)*0.5;
-
 if timer <= 60 and global.roundStart and !oGameManager.stopTimer {
-	if timer == 60 and !audio_is_playing(snBotCharge) PlayAudio(snBotCharge,_vol,-1,-1,0.8+fast/100);
 	launchDirSpd += 0.5;
 	launchDir -= launchDirSpd;
 	if allowGrow scale += 0.01;
@@ -28,8 +25,6 @@ with(oPlayer) {
 }
 
 if timer == 0 {
-	audio_stop_sound(snBotCharge);
-	PlayAudio(snBotBurst,_vol);
 	launchDirSpd = 0;
 	if instance_exists(target) and target.visible launchDir = point_direction(x,y,target.x,target.y);
 	hSpd = lengthdir_x(25,launchDir);
@@ -38,9 +33,6 @@ if timer == 0 {
 	fast += 2;
 	allowGrow = false;
 }
-
-audio_sound_gain(snBotBurst,_vol,0);
-audio_sound_gain(snBotCharge,_vol,0);
 
 if scale == 1 allowGrow = true;
 

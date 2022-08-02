@@ -13,8 +13,8 @@ else if instance_exists(follow) { //Update target
 }
 
 //Move camera to target
-camX += (targetX - camX) / 20;
-camY += (targetY - camY) / 20;
+camX += (targetX - camX) / 15;
+camY += (targetY - camY) / 15;
 
 //Shake
 shakeRemain = max(0, shakeRemain - ((1/shakeLength) * shakeMagnitude));

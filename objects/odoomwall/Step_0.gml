@@ -37,7 +37,6 @@ if !debug {
 	
 		if _dead and SYNC {
 			PlayAudio(snDeath,0.15,x,y);
-			audio_stop_sound(snBotCharge);
 			
 			deadObject = instance_create_layer(x,y,"Dead",oPlayerDeath);
 			with deadObject {
@@ -81,7 +80,10 @@ if !debug {
 				catch(_error) { show_debug_message(_error); }
 			}
 		
-			if _num <= 1 oGameManager.stopTimer = true;
+			if _num <= 1 {
+				oGameManager.stopTimer = true;
+				audio_stop_sound(mMusic);
+			}
 		}
 	}
 } else {
@@ -159,11 +161,11 @@ if wallPercent == in {
 	xstart = x;
 	ystart = y;
 	if in {
-		maxLen = max(maxLen+100,maxLenMax)+200*(3-max(0,_num));
+		maxLen = max(maxLen+100,maxLenMax)+100*(3-max(0,_num));
 		xTo = irandom_range(startMaxLen-maxLen+100,room_width-startMaxLen+maxLen-100);
 		yTo = irandom_range(startMaxLen-maxLen+100,room_height-startMaxLen+maxLen-100);
 	} else {
-		minLen = max(minLen+100,minLenMax)+60*(3-max(0,_num));
+		minLen = max(minLen+100,minLenMax)+30*(3-max(0,_num));
 		xTo = irandom_range(startMinLen-minLen+100,room_width-startMinLen+minLen-100);
 		yTo = irandom_range(startMinLen-minLen+100,room_height-startMinLen+minLen-100);
 	}

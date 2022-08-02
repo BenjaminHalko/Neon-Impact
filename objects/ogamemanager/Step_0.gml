@@ -49,13 +49,21 @@ if room == rGame {
 			}
 		}
 
-		if global.numPlayers == 1 and oGlobalManager.number > 2 and mouse_check_button_pressed(mb_left) leave = true;
+		if global.numPlayers == 1 and oGlobalManager.number > 2 and mouse_check_button_pressed(mb_left) {
+			leave = true;
+			audio_sound_gain(mGameOver,0,0.8);
+		}
 		if global.gameOver or leave {
 			if !leave {
+				audio_sound_gain(mGameOver,1,0);
+				if !audio_is_playing(mGameOver) and panelXPercent > 0 audio_play_sound(mGameOver,1,true,oGlobalManager.musicVol*0.7);
 				panelXPercent = Approach(panelXPercent,1,0.015);
 				if panelXPercent == 1 {
 					timeLeft = Approach(timeLeft,0,1/60);
-					if timeLeft == 0 leave = true;
+					if timeLeft == 0 {
+						leave = true;
+						audio_sound_gain(mGameOver,0,0.8);
+					}
 					recordPercent = Approach(recordPercent,2.6,0.03);
 					if recordPercent >= 1.4 {
 						hexPercent = Approach(hexPercent,2,0.03);
@@ -75,8 +83,8 @@ if room == rGame {
 	} else {
 		var _lastZoom = global.camZoom;
 		if !surface_exists(transitionSurfacePing) {
-			if global.camZoom == 0 audio_play_sound(snRoundStart,1,false,0.25);
 			global.camZoom = Approach(global.camZoom,1,0.0075);
+			audio_stop_sound(mGameOver);
 		}
 		var _percent = animcurve_channel_evaluate(other.xRecordCurve,global.camZoom);
 		with(oCamera) {
@@ -88,6 +96,7 @@ if room == rGame {
 		}
 		if global.camZoom == 1 and SYNC {
 			global.roundStart = true;
+			audio_play_sound(mMusic,1,true,oGlobalManager.musicVol,choose(51.692, 95.999, 155.076));
 			if global.multiplayer rollbackSubtrackFrame = rollback_confirmed_frame;
 			with(oDoomWall) {
 				surface_resize(surface,1920,1080);
