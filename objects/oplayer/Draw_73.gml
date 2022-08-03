@@ -2,7 +2,7 @@
 
 // Feather disable GM1013
 // Feather disable GM1011
-if (!player_local and (global.spectate != id or !oCamera.spectate)) or !drawingLine or !global.roundStart exit;
+if (!player_local and (global.spectate != id or !SPECTATING)) or !drawingLine or !global.roundStart exit;
 	
 var _len = min(launchLenMax,launchDist)/launchLenMax*15;
 for(var i = 0; i < _len; i++) {

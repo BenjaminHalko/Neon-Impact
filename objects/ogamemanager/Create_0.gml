@@ -58,6 +58,7 @@ tanAngle = darctan(540/960);
 global.gameOver = false;
 stopTimer = false;
 alone = false;
+gameOverScreenAppear = false;
 
 panelXPercent = -0.5;
 recordPercent = 0;
@@ -66,6 +67,9 @@ textPercent = 0;
 timeLeft = 10;
 leave = false;
 
+camPositionsX = array_create(4,0);
+camPositionsY = array_create(4,0);
+
 xMoveCurve = animcurve_get_channel(GameOverCurve,"xMove");
 yHexCurve = animcurve_get_channel(GameOverCurve,"yHex");
 xRecordCurve = animcurve_get_channel(GameOverCurve,"xRecord");
@@ -73,9 +77,9 @@ xRecordCurve = animcurve_get_channel(GameOverCurve,"xRecord");
 defaultIconSize = sprite_get_width(sDefaultIcons);
 winOrder = [0,1,2,3];
 
+gotScores = array_create(4,false);
+
 //Transition
-transitionPercent = 0;
-transitionSurfacePing = -1;
-transitionSurfacePong = surface_create(1920,1080);
+transitionPercent = 1;
 transitionChange = false;
 transitionDir = 0;

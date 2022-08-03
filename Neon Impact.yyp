@@ -34,8 +34,8 @@
     {"id":{"name":"sDoomWall","path":"sprites/sDoomWall/sDoomWall.yy",},"order":5,},
     {"id":{"name":"snProjectileBonk","path":"sounds/snProjectileBonk/snProjectileBonk.yy",},"order":2,},
     {"id":{"name":"GuiFont","path":"fonts/GuiFont/GuiFont.yy",},"order":5,},
+    {"id":{"name":"oCoverArt","path":"objects/oCoverArt/oCoverArt.yy",},"order":0,},
     {"id":{"name":"snRoundStart","path":"sounds/snRoundStart/snRoundStart.yy",},"order":0,},
-    {"id":{"name":"snLaunch","path":"sounds/snLaunch/snLaunch.yy",},"order":6,},
     {"id":{"name":"snDeath","path":"sounds/snDeath/snDeath.yy",},"order":0,},
     {"id":{"name":"oTitle","path":"objects/oTitle/oTitle.yy",},"order":0,},
     {"id":{"name":"DoomCurve","path":"animcurves/DoomCurve/DoomCurve.yy",},"order":6,},
@@ -80,6 +80,7 @@
     {"folderPath":"folders/Global/Title.yy","order":9,"resourceVersion":"1.0","name":"Title","tags":[],"resourceType":"GMFolder",},
     {"folderPath":"folders/Entities/SoundFX.yy","order":7,"resourceVersion":"1.0","name":"SoundFX","tags":[],"resourceType":"GMFolder",},
     {"folderPath":"folders/Global/Sounds.yy","order":11,"resourceVersion":"1.0","name":"Sounds","tags":[],"resourceType":"GMFolder",},
+    {"folderPath":"folders/Global/CoverArtMaker.yy","order":15,"resourceVersion":"1.0","name":"CoverArtMaker","tags":[],"resourceType":"GMFolder",},
   ],
   "AudioGroups": [
     {"targets":-1,"resourceVersion":"1.3","name":"audiogroup_default","resourceType":"GMAudioGroup",},

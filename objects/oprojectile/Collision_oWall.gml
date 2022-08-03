@@ -1,5 +1,7 @@
 /// @desc
 
+if !SYNC exit;
+
 Collision(other,1.1);
 other.colour = image_blend;
 other.colourAmount = 1;

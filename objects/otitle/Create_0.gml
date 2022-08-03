@@ -33,11 +33,18 @@ towerPercent = 0;
 
 towerScale = [1,1];
 
-towerRings = [0,-500,-100,-600];	
+towerRings = array_create(4,1000);	
 
 curve = animcurve_get_channel(GameOverCurve,"xRecord");
 
+startY = 700;
+startPercent = 0;
+
+startScaleBounce = 0;
+startScale = 0;
+
 //Volume Control
+
 volX = 400;
 volWidth = 400;
 volY1 = 800;
@@ -95,8 +102,12 @@ if(gxc_get_query_param("roomUrl") != undefined) {
 	buttonPressed = 1;
 	global.multiplayer = true;
 	instance_create_layer(0,0,layer,oGameManager);
-	towerPercent += 0.01;
+	volX = (room_width-volWidth+string_width("BGM")+20)/2;
+	volY1 = 1100;
+	volY2 = 1150;
 }
 
-music = audio_play_sound(mMusicIntro,1,false,0.9*oGlobalManager.musicVol);
+music = -1;
 lastPos = 0;
+
+call_later(30,time_source_units_frames,function() {music = audio_play_sound(mMusicIntro,1,false,0.9*oGlobalManager.musicVol)});

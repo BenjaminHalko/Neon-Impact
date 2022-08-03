@@ -1,20 +1,6 @@
 /// @desc Move Camera
 
-//Spectate
-if spectate {
-	if instance_exists(global.spectate) {
-		targetX = global.spectate.x-1920/2;
-		targetY = global.spectate.y-1080/2;
-	}
-}
-else if instance_exists(follow) { //Update target
-	targetX = follow.x-1920/2;
-	targetY = follow.y-1080/2;
-}
-
-//Move camera to target
-camX += (targetX - camX) / 15;
-camY += (targetY - camY) / 15;
+// The rest of the camera code is in oGameManager because of rollback issues. :(
 
 //Shake
 shakeRemain = max(0, shakeRemain - ((1/shakeLength) * shakeMagnitude));

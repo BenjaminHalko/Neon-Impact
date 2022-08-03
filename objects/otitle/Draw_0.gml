@@ -14,8 +14,8 @@ if buttonMovePercent != 1.1 {
 if (towerPercent != 0) {
 	towerScale[0] = ApproachFade(towerScale[0],1,0.05,0.8);
 	towerScale[1] = ApproachFade(towerScale[1],1,0.05,0.8);
-	var _y = 300*(1-towerPercent)+room_height+10;
-	var _shake = 15;
+	var _y = 400*(1-towerPercent)+room_height+10;
+	var _shake = 25;
 	var _col = global.colours[1+multiplayerStart];
 	draw_sprite_ext(sConnecting,0,400+random_range(-_shake,_shake)*(1-towerPercent),_y+random_range(-_shake,_shake)*(1-towerPercent),towerScale[0],towerScale[0],0,_col,1);
 	draw_sprite_ext(sConnecting,0,room_width-400+random_range(-_shake,_shake)*(1-towerPercent),_y+random_range(-_shake,_shake)*(1-towerPercent),towerScale[1],towerScale[1],0,_col,1);
@@ -25,9 +25,8 @@ if (towerPercent != 0) {
 		for(var j = 0; j < 4; j++) {
 			var _x = 400;
 			if j % 2 _x = room_width - _x;
-			_y = room_height-200;
-			towerRings[j] += 5;
-			if towerRings[j] >= 1000 and !multiplayerStart towerRings[j] = 0;
+			_y = room_height-200*towerScale[j % 2];
+			towerRings[j] += 7;
 			var _len =	towerRings[j];
 			var _width = max(min(0,15-_len/10)+10,0);
 			_len = max(0,_len);
@@ -57,17 +56,27 @@ if (buttonMovePercent != 1.1 or multiplayerStart or global.multiplayer) and !dra
 	draw_set_alpha(min(buttonMovePercent*7,1))
 	if multiplayerStart {
 		draw_set_color(global.colours[2]);
-		draw_text_transformed(room_width/2,room_height/2+100*(towerScale[1]-1),"STARTING MULTIPLAYER",towerScale[0],towerScale[0],0);
+		draw_text_transformed(room_width/2,room_height/2-100+100*(towerScale[1]-1),"STARTING MULTIPLAYER",towerScale[0],towerScale[0],0);
 	} else if (global.multiplayer) {
 		draw_set_color(global.colours[1]);
 		if !connected {
-			draw_text_transformed(room_width/2,room_height/2+100*(towerScale[1]-1),"CONNECTING",towerScale[0],towerScale[0],0);
+			draw_text_transformed(room_width/2,room_height/2-100+100*(towerScale[1]-1),"CONNECTING",towerScale[0],towerScale[0],0);
 		} else {
-			draw_text_transformed(room_width/2,room_height/2-20+100*(towerScale[1]-1),string(global.numPlayers)+" OUT OF 4 PLAYERS JOINED",towerScale[0],towerScale[0],0);
-			draw_text_transformed(room_width/2,room_height/2+20+100*(towerScale[1]-1),"CLICK ANYWHERE TO START",towerScale[0],towerScale[0],0);
+			draw_text_transformed(room_width/2,room_height/2-20-100+100*(towerScale[1]-1),string(global.numPlayers)+" OUT OF 4 PLAYERS JOINED",towerScale[0],towerScale[0],0);
+			draw_text_transformed(room_width/2,room_height/2+20-100+100*(towerScale[1]-1),"PRESS START WHEN READY",towerScale[0],towerScale[0],0);
 			
 		}
 	}
+	
+	//Start
+	if connected {
+		draw_set_alpha(min(buttonMovePercent*7,1)*(buttonPressed == 1)-0.2*(1-startPercent));
+		draw_set_color(c_white);
+		draw_set_halign(fa_center);
+		draw_set_valign(fa_middle);
+		draw_text_transformed(room_width/2,startY,"START",max(0,max(towerScale[0],towerScale[1])*1.5+startPercent+startScale),max(0,max(towerScale[0],towerScale[1])*1.5+startPercent+startScale),0);
+	}
+	
 	draw_set_alpha(1);
 
 	gpu_set_tex_filter(_filter);
@@ -77,13 +86,13 @@ if (buttonMovePercent != 1.1 or multiplayerStart or global.multiplayer) and !dra
 draw_set_halign(fa_right);
 draw_set_valign(fa_middle);
 var _pos;
-draw_set_alpha(max(0,1-min(buttonMovePercent*7,1))*musicAlpha);
+draw_set_alpha(max(0,1-min(buttonMovePercent*7,1)*(buttonPressed != 1))*musicAlpha);
 draw_set_color(global.colours[0]);
 draw_line_width(volX,volY1,volX+volWidth,volY1,3);
 _pos = volX + volWidth * musicDraw;
 draw_rectangle(_pos-5,volY1-10,_pos+5,volY1+10,false);
 draw_text(volX-20,volY1,"BGM");
-draw_set_alpha(max(0,1-min(buttonMovePercent*7,1))*sfxAlpha);
+draw_set_alpha(max(0,1-min(buttonMovePercent*7,1)*(buttonPressed != 1))*sfxAlpha);
 draw_set_color(global.colours[2]);
 draw_line_width(volX,volY2,volX+volWidth,volY2,3);
 _pos = volX + volWidth * 0.5 * sfxDraw;

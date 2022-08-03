@@ -2,7 +2,7 @@
 /// @desc Game Management
 
 if PAUSE {
-	if mouse_check_button_pressed(mb_left) rollback_start_game();
+	if room == rTitle and oTitle.multiplayerStart rollback_start_game();
 	exit;
 }
 
@@ -13,18 +13,43 @@ if room == rGame {
 			if global.multiplayer global.time = max(0,(rollback_confirmed_frame-rollbackSubtrackFrame)/60);
 			else global.time += 1/60;
 		}
+		
+		//Camera Movement
+		for(var i = 0; i < 4; i++) {
+			with(oCamera) {
+				//Spectate
+				if spectate[i] {
+					if instance_exists(global.spectate) {
+						targetX[i] = global.spectate.x-1920/2;
+						targetY[i] = global.spectate.y-1080/2;
+					}
+				}
+				else if instance_exists(follow[i]) { //Update target
+					targetX[i] = follow[i].x-1920/2;
+					targetY[i] = follow[i].y-1080/2;
+				}	
+			}
+			camPositionsX[i] += (oCamera.targetX[i] - camPositionsX[i]) / 15;
+			camPositionsY[i] += (oCamera.targetY[i] - camPositionsY[i]) / 15;
+		}
+		
+		oCamera.camX = camPositionsX[oGlobalManager.playerNum];
+		oCamera.camY = camPositionsY[oGlobalManager.playerNum];
 
-		if !global.gameOver and (alarm[0] <= 0 or !instance_exists(global.spectate) or global.spectate.dead) and (!global.multiplayer or rollback_sync_on_frame()) {
+		if !global.gameOver and (alarm[0] <= 0 or !instance_exists(global.spectate) or global.spectate.dead) and SYNC {
 			var _playerCount = instance_number(oPlayer);
 			if _playerCount == 0 global.gameOver = true;
 			else {
-				var _originalNumber = spectatorNumber;
+				var _found = ds_list_create();
 				do {
 					spectatorNumber = (spectatorNumber + 1) % _playerCount;
+					
 					global.spectate = instance_find(oPlayer,spectatorNumber);
-					if spectatorNumber == _originalNumber and global.spectate.dead global.gameOver = true;
+					if ds_list_find_index(_found,spectatorNumber) != -1 and global.spectate.dead global.gameOver = true;
+					ds_list_add(_found,spectatorNumber);
 				} until (instance_exists(global.spectate) and !global.spectate.dead) or global.gameOver;
 		
+				ds_list_destroy(_found);
 				alarm[0] = 60 * 10;
 			}
 	
@@ -46,14 +71,27 @@ if room == rGame {
 					recordPercent -= 0.8 * array_length(oGlobalManager.globalScores);
 					global.numPlayers = 1;
 				}
+				
+				global.spectate = noone;
 			}
 		}
-
+		
 		if global.numPlayers == 1 and oGlobalManager.number > 2 and mouse_check_button_pressed(mb_left) {
 			leave = true;
 			audio_sound_gain(mGameOver,0,0.8);
 		}
-		if global.gameOver or leave {
+		
+		if !gameOverScreenAppear and oCamera.spectate[oGlobalManager.playerNum] {
+			gameOverScreenAppear = true;
+			with(oPlayer) {
+				if !other.gotScores[index] {
+					other.gameOverScreenAppear = false;
+					break;
+				}
+			}
+		}
+		
+		if leave or gameOverScreenAppear or (global.numPlayers == 1 and global.gameOver) {
 			if !leave {
 				audio_sound_gain(mGameOver,1,0);
 				if !audio_is_playing(mGameOver) and panelXPercent > 0 audio_play_sound(mGameOver,1,true,oGlobalManager.musicVol*0.7);
@@ -80,16 +118,16 @@ if room == rGame {
 				}
 			}
 		}
-	} else {
+	} else if SYNC {
 		var _lastZoom = global.camZoom;
-		if !surface_exists(transitionSurfacePing) {
+		if transitionPercent == 1 {
 			global.camZoom = Approach(global.camZoom,1,0.0075);
 			audio_stop_sound(mGameOver);
 		}
 		var _percent = animcurve_channel_evaluate(other.xRecordCurve,global.camZoom);
 		with(oCamera) {
-			camX = lerp((room_width-camWMax)/2,targetX,_percent);
-			camY = lerp((room_height-camHMax)/2,targetY,_percent);
+			camX = lerp((room_width-camWMax)/2,oGameManager.camPositionsX[oGlobalManager.playerNum],_percent);
+			camY = lerp((room_height-camHMax)/2,oGameManager.camPositionsY[oGlobalManager.playerNum],_percent);
 			camW = lerp(camWMax,1920,_percent);
 			camH = lerp(camHMax,1080,_percent);
 			camera_set_view_size(cam,camW,camH);
@@ -103,21 +141,25 @@ if room == rGame {
 			}
 		}
 	}
-} else if !surface_exists(transitionSurfacePing) and oTitle.buttonMovePercent >= 0.7 {
-	if oTitle.towerPercent != 0 oTitle.multiplayerStart = true;
-	Transition(true,oTitle.multiplayerStart);
+} else if transitionPercent == 1 and (oTitle.buttonPressed == 1 or oTitle.buttonMovePercent >= 0.7) and SYNC {
+	Transition(true);
+	if oTitle.buttonPressed == 1 {
+		oTitle.multiplayerStart = true;
+		oTitle.startScaleBounce = 0.15;
+		transitionPercent = -1.1;
+	}
 }
 
 //Transition
-if surface_exists(transitionSurfacePing) {
-	if !surface_exists(transitionSurfacePong) transitionSurfacePong = surface_create(1920,1080);
+if transitionPercent != 1 {
+	if !surface_exists(oGlobalManager.transitionSurfacePong) oGlobalManager.transitionSurfacePong = surface_create(1920,1080);
 	transitionPercent = Approach(transitionPercent,1,0.02);
 	transitionDir -= 0.7;
-	if transitionPercent == 1 and SYNC {
+	if transitionPercent == 1 {
 		if transitionChange Transition();
 		else {
-			surface_free(transitionSurfacePing);
-			surface_free(transitionSurfacePong);
+			surface_free(oGlobalManager.transitionSurfacePing);
+			surface_free(oGlobalManager.transitionSurfacePong);
 		}
 	}
 }

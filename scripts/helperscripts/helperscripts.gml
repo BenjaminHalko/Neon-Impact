@@ -99,7 +99,7 @@ function Wrap(_value, _min, _max) {
 
 function ScreenShake(_magnitude, _length,_x=-1,_y=-1) {
 	with (oCamera) {
-		if (_x == -1 or point_in_rectangle(_x,_y,camX,camY,camX+camW,camY+camH)) and _magnitude > shakeRemain {
+		if (_x == -1 or point_in_rectangle(_x,_y,CamX,CamY,CamX+camW,CamY+camH)) and _magnitude > shakeRemain {
 			shakeLength = _length;
 			shakeMagnitude = _magnitude;
 			shakeRemain = _magnitude;
@@ -109,7 +109,7 @@ function ScreenShake(_magnitude, _length,_x=-1,_y=-1) {
 
 function PlayAudio(_sound,_vol=1,_x=-1,_y=-1,_pitch=1) {
 	if PAUSE return;
-	if (_x == -1 or point_in_rectangle(_x,_y,CamX,CamY,CamX+CamW,CamY+CamH) or (object_index == oPlayer and (player_local or (global.spectate == id and oCamera.spectate)))) and (!ds_map_exists(oGlobalManager.audioPlaying,id) or audio_get_name(oGlobalManager.audioPlaying[? id]) != audio_get_name(_sound)) {
+	if (_x == -1 or point_in_rectangle(_x,_y,CamX,CamY,CamX+CamW,CamY+CamH) or (object_index == oPlayer and (player_local or (global.spectate == id and SPECTATING)))) and (!ds_map_exists(oGlobalManager.audioPlaying,id) or audio_get_name(oGlobalManager.audioPlaying[? id]) != audio_get_name(_sound)) {
 		var _audio = audio_play_sound(_sound,1,false,_vol*oGlobalManager.sfxVol,0,_pitch);
 		if ds_map_exists(oGlobalManager.audioPlaying,id) oGlobalManager.audioPlaying[? id] = _audio;
 		else ds_map_add(oGlobalManager.audioPlaying,id,_audio);
@@ -150,121 +150,189 @@ function HexagonSprite(_sprite) {
 	return [_sprite1,_sprite2];
 }
 
-function Transition(_change = false, _delayed = false) {
-	if !SYNC return;
-	with(oGameManager) {
-		if !surface_exists(transitionSurfacePing) transitionSurfacePing = surface_create(1920,1080);
-		if !surface_exists(transitionSurfacePong) transitionSurfacePong = surface_create(1920,1080);
-		transitionChange = _change;
-		transitionPercent = -1*_change * _delayed;
-		
-		if _change {
-			surface_set_target(transitionSurfacePing);
-			draw_sprite_ext(sDoomWall,0,0,0,1920/48,1080/40,0,c_white,1);
-			surface_reset_target();
-		} else {
-			audio_play_sound(snRoundStart,1,false,0.25*oGlobalManager.sfxVol);
-			var _surface = view_get_surface_id(0);
-			_surface = _surface == -1 ? application_surface : _surface;
-			if surface_exists(_surface) {
-				surface_set_target(transitionSurfacePing);
-				draw_surface(_surface,0,0);
-				surface_reset_target();
-			}
-		}
-	}
-	
-	if room == rGame and !_change {
-		global.roundStart = false;
-		global.gameOver = false;
-		global.scores = array_create(4,0);
-		global.spectate = noone;
-		global.time = 0;
-		global.camZoom = 0;
-		
-		instance_destroy(oPlayerDeath);
-		
+function Transition(_change = false) {
+	if SYNC {
 		with(oGameManager) {
-			stopTimer = false;
-			panelXPercent = -0.5;
-			recordPercent = 0;
-			hexPercent = 0;
-			textPercent = 0;
-			timeLeft = 10;
-			leave = false;
-		}
+			if !surface_exists(oGlobalManager.transitionSurfacePing) oGlobalManager.transitionSurfacePing = surface_create(1920,1080);
+			if !surface_exists(oGlobalManager.transitionSurfacePong) transitionSurfacePong = surface_create(1920,1080);
+			transitionChange = _change;
+			transitionPercent = 0;
 		
-		with(oGlobalManager) {
-			number = 0;	
-			if global.numPlayers == 1 {
-				global.playerSprites = array_create(4,global.playerSprites[playerNum]);
-				playerNum = irandom(3);
-				global.playersConnected = array_create(4,false);
-				global.playersConnected[playerNum] = true;
+			if _change {
+				surface_set_target(oGlobalManager.transitionSurfacePing);
+				draw_sprite_ext(sDoomWall,0,0,0,1920/48,1080/40,0,c_white,1);
+				surface_reset_target();
+			} else {
+				audio_play_sound(snRoundStart,1,false,0.25*oGlobalManager.sfxVol);
+				var _surface = view_get_surface_id(0);
+				_surface = _surface == -1 ? application_surface : _surface;
+				if surface_exists(_surface) {
+					surface_set_target(oGlobalManager.transitionSurfacePing);
+					draw_surface(_surface,0,0);
+					surface_reset_target();
+				}
 			}
 		}
-		
-		var _dir = random(360);
 	
-		with(oPlayer) {
-			visible = true;
-			dead = false;
-			deadObject = noone;
-			hSpd = 0;
-			vSpd = 0;
-			drawingLine = false;
-			x = round(room_width/2+lengthdir_x(800,_dir));
-			y = round(room_height/2+lengthdir_y(800,_dir));
-			_dir -= 360/max(2,global.numPlayers);
-			if global.numPlayers == 1 index = oGlobalManager.playerNum;
-		}
+		if room == rGame and !_change {
+			global.roundStart = false;
+			global.gameOver = false;
+			global.scores = array_create(4,0);
+			global.spectate = noone;
+			global.time = 0;
+			global.camZoom = 0;
 		
-		if global.numPlayers == 1 {
-			if !instance_exists(oBot) instance_create_layer(0,0,"Players",oBot);
-			with(oBot) {
+			instance_destroy(oPlayerDeath);
+		
+			with(oGameManager) {
+				stopTimer = false;
+				panelXPercent = -0.5;
+				recordPercent = 0;
+				hexPercent = 0;
+				textPercent = 0;
+				timeLeft = 10;
+				leave = false;
+				gotScores = array_create(4,false);
+				gameOverScreenAppear = false;
+			}
+		
+			with(oGlobalManager) {
+				number = 0;	
+				if global.numPlayers == 1 {
+					if !switchedToSinglePlayer {
+						global.playerSprites = array_create(4,global.playerSprites[playerNum]);
+						global.names = array_create(4,global.names[playerNum]);
+						oCamera.follow = array_create(4,oCamera.follow[playerNum]);
+						switchedToSinglePlayer = true;
+					}
+					playerNum = irandom(3);
+					global.playersConnected = array_create(4,false);
+					global.playersConnected[playerNum] = true;
+				}
+			}
+		
+			var _dir = irandom(360);
+			
+			if global.multiplayer _dir = rollback_confirmed_frame % 360;
+	
+			with(oPlayer) {
+				visible = true;
+				dead = false;
+				deadObject = noone;
 				hSpd = 0;
 				vSpd = 0;
-				x = round(room_width/2+lengthdir_x(1600,_dir));
-				y = round(room_height/2+lengthdir_y(1600,_dir));
-				timer = 60;
-				fast = 0;
+				drawingLine = false;
+				if global.numPlayers == 1 index = oGlobalManager.playerNum;
+				x = round(room_width/2+lengthdir_x(650,_dir-index*60));
+				y = round(room_height/2+lengthdir_y(650,_dir-index*60));
 			}
-		} else instance_destroy(oBot);
 		
-		with(oCamera) {
-			spectate = false;	
-			camX = follow.x - camW/2;
-			camY = follow.y - camH/2;
-		}
+			if global.numPlayers == 1 {
+				if !instance_exists(oBot) instance_create_layer(0,0,"Players",oBot);
+				with(oBot) {
+					hSpd = 0;
+					vSpd = 0;
+					x = round(room_width/2+lengthdir_x(650,_dir+180));
+					y = round(room_height/2+lengthdir_y(650,_dir+180));
+					timer = 60;
+					fast = 0;
+				}
+			} else instance_destroy(oBot);
 		
-		with(oDoomWall) {
-			x = room_width/2;
-			y = room_height/2;
+			with(oCamera) {
+				spectate = array_create(4,false);	
+				for(var i = 0; i < 4; i++) {
+					if !instance_exists(follow[i]) continue;
+					oGameManager.camPositionsX[i] = follow[i].x - camW/2;
+					oGameManager.camPositionsY[i] = follow[i].y - camH/2;
+				}
+				camX = CamX;
+				camY = CamY;
+			}
+		
+			with(oDoomWall) {
+				x = room_width/2;
+				y = room_height/2;
 
-			xTo = x;
-			yTo = y;
+				xTo = x;
+				yTo = y;
 
-			xstart = x;
-			ystart = y;
+				xstart = x;
+				ystart = y;
 			
-			in = true;
+				in = true;
 			
-			wallLen = startMaxLen;
-			disappear = 0;
+				wallLen = startMaxLen;
+				disappear = 0;
 			
-			rotation = 0;
-			maxLen = 0;
-			minLen = 0;
+				rotation = 0;
+				maxLen = 0;
+				minLen = 0;
 			
-			wallPercent = 1;
-		}
+				wallPercent = 1;
+			}
 		
-		with(oProjectile) {
-			if created instance_destroy();	
+			with(oProjectile) {
+				if created instance_destroy();
+				x = xstart;
+				y = ystart;
+			}
+		} else if !_change and room != rGame {
+			room_goto(rGame);
+			audio_stop_sound(mMusic);
+			audio_stop_sound(mMusicIntro);
 		}
-	} else if !_change and room != rGame {
-		room_goto(rGame);	
-		audio_stop_sound(mMusic);
-		audio_stop_sound(mMusicIntro);
+	}
+}
+
+function DefeatPlayer(_id,_destroy = false) {
+	with(oPlayer) {
+		if index == _id {
+			if dead and _destroy instance_destroy();
+			else {
+				deadObject = instance_create_layer(x,y,"Dead",oPlayerDeath);
+				with deadObject {
+					index = other.index;
+					image_angle = other.image_angle;
+				}
+					
+				var _num = 0;
+				with(oPlayer) {
+					if visible _num++
+				}
+					
+				var _dir = random(360);
+				for (var i = 0; i < 2; i++) {
+					if i == 0 and _num == 2 and !instance_exists(oBot) {
+						with(instance_create_layer(x,y,"Players",oBot)) {
+							scale = 0;
+							hSpd = lengthdir_x(13,_dir+120*i);
+							vSpd = lengthdir_y(13,_dir+120*i);
+						}
+					} else {
+						with(instance_create_layer(x,y,"Projectiles",oProjectile)) {
+							created = true;
+							noProjectileCollision = true;
+							image_angle = other.image_angle;
+							colour = global.colours[other.index];
+							colourAmount = 1;
+							hSpd = lengthdir_x(13,_dir+120*i);
+							vSpd = lengthdir_y(13,_dir+120*i);
+							image_xscale = 64/sprite_width;
+							image_yscale = image_xscale;
+							mass = 64/96;
+						}
+					}
+				}
+				visible = false;
+					
+				if _num <= 1 {
+					oGameManager.stopTimer = true;
+					audio_stop_sound(mMusic);
+				}
+			}
+				
+			break;
+		}
 	}
 }

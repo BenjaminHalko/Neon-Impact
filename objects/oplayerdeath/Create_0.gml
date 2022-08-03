@@ -14,4 +14,5 @@ createProjectiles = true;
 
 width = 96/sprite_get_width(sPlayerDeath);
 
+
 ScreenShake(80,30,x,y);

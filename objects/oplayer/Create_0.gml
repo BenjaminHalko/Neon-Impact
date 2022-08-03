@@ -4,13 +4,9 @@ index = 0;
 /// feather disable GM1013
 index = player_id;
 // Feather disable once GM1011
-if player_local {
-	with(oCamera) {
-		follow = other.id;
-		camX = follow.x - camW/2;
-		camY = follow.y - camH/2;
-	}
-}
+oCamera.follow[index] = id;
+oGameManager.camPositionsX[index] = x - 960;
+oGameManager.camPositionsY[index] = y - 540;
 /// feather enable GM1013
 
 if global.multiplayer {

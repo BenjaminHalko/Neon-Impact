@@ -78,7 +78,7 @@ if room == rGame {
 		draw_set_valign(fa_top);
 		draw_set_color(c_white);
 
-		if oCamera.spectate {
+		if SPECTATING {
 			draw_set_valign(fa_bottom);
 			draw_set_alpha(Wave(0.5,0.7,4,0));
 			draw_text(960,1060,"SPECTATING");
@@ -107,7 +107,7 @@ if room == rGame {
 		//Panels
 		draw_set_alpha(0.3);
 		draw_set_color(global.colours[4]);
-		_panelX = 1150*animcurve_channel_evaluate(xMoveCurve,panelXPercent);
+		_panelX = 1155*animcurve_channel_evaluate(xMoveCurve,panelXPercent)-5;
 		draw_triangle(_panelX,-1,_panelX-600,-1,_panelX-600,1080,false);
 		draw_rectangle(0,0,_panelX-600-(os_type == os_operagx),1080,false);
 		draw_set_alpha(1);
@@ -229,10 +229,20 @@ if room == rGame {
 	}
 }
 
+//Warning
+if global.gameOver and !gameOverScreenAppear and global.numPlayers != 1 {
+	draw_set_color(c_red);
+	draw_set_alpha(0.7);
+	draw_set_halign(fa_center);
+	draw_set_valign(fa_bottom);
+	draw_text(960,1060,"WARNING: DESYNC MAY HAVE OCCURED");
+	draw_set_alpha(1);
+}
+
 //Transition
-if surface_exists(transitionSurfacePing) {
+if transitionPercent != 1 {
 	var _drawSurface = function() {
-		surface_set_target(transitionSurfacePong);
+		surface_set_target(oGlobalManager.transitionSurfacePong);
 		draw_clear_alpha(c_black,0);
 		
 		var _wallLen = lerp(-45,1600,median(0,1,transitionPercent));
@@ -246,10 +256,10 @@ if surface_exists(transitionSurfacePing) {
 			}
 			
 			gpu_set_blendmode_ext(bm_dest_alpha,bm_inv_dest_alpha);
-			draw_surface(transitionSurfacePing,0,0);
+			draw_surface(oGlobalManager.transitionSurfacePing,0,0);
 			gpu_set_blendmode(bm_normal);
 		} else {
-			draw_surface(transitionSurfacePing,0,0);
+			draw_surface(oGlobalManager.transitionSurfacePing,0,0);
 			gpu_set_blendmode(bm_subtract);
 			draw_set_color(c_black);
 			gpu_set_blendmode(bm_subtract);
@@ -274,7 +284,7 @@ if surface_exists(transitionSurfacePing) {
 			_width);
 		}
 		surface_reset_target();
-		draw_surface(transitionSurfacePong,0,0);
+		draw_surface(oGlobalManager.transitionSurfacePong,0,0);
 	}
 	
 	if !oRender.disable {
@@ -284,9 +294,7 @@ if surface_exists(transitionSurfacePing) {
 		surface_reset_target();
 		surface_set_target(oRender.guiSurface);
 		gpu_set_blendmode(bm_subtract);
-		draw_surface_ext(transitionSurfacePong,0,0,1,1,0,c_black,1);
+		draw_surface_ext(oGlobalManager.transitionSurfacePong,0,0,1,1,0,c_black,1);
 		gpu_set_blendmode(bm_normal);
 	} else _drawSurface();
 }
-
-if keyboard_check(ord("D")) draw_text(128,1080-128,string(fps));

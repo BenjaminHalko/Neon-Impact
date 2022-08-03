@@ -9,6 +9,7 @@
 #macro CamYReal camera_get_view_y(oCamera.cam)
 #macro PAUSE (global.multiplayer and !rollback_game_running)
 #macro SYNC (!global.multiplayer or rollback_sync_on_frame())
+#macro SPECTATING oCamera.spectate[oGlobalManager.playerNum]
 
 #macro CHALLENGEID "d655ef5e-ed52-4228-ac58-292edf12ec3d"
 
@@ -35,6 +36,11 @@ globalScores = []
 audioPlaying = ds_map_create();
 musicVol = 0.75;
 sfxVol = 1.5;
+
+switchedToSinglePlayer = false;
+
+transitionSurfacePing = -1;
+transitionSurfacePong = -1;
 
 try {
 	gxc_challenge_get_global_scores(function(_status, _result) {

@@ -38,7 +38,7 @@ debug = false;
 drawWall = function(_x,_y,_surface,_width,_height) {
 	surface_set_target(_surface);
 	if oRender.disable draw_clear(#080019);
-	else draw_sprite_ext(sDoomWall,0,-_x%288,-_y%240,_width/288+1,_height/240+1,0,c_white,1);
+	else draw_sprite_ext(sDoomWall,0,-_x%288-288,-_y%240-240,_width/288+2,_height/240+2,0,c_white,1);
 
 	draw_set_color(c_black);
 	var _len = max(0,wallLen);

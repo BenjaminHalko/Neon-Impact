@@ -75,6 +75,7 @@ if !debug {
 			visible = false;
 		
 			global.scores[index] = global.time;
+			
 			if player_local {
 				try { gxc_challenge_submit_score(global.time*1000,undefined,{challengeId: CHALLENGEID}); }
 				catch(_error) { show_debug_message(_error); }

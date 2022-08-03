@@ -24,7 +24,7 @@ with(oPlayer) {
 	}
 }
 
-if timer == 0 {
+if timer == 0 and SYNC {
 	launchDirSpd = 0;
 	if instance_exists(target) and target.visible launchDir = point_direction(x,y,target.x,target.y);
 	hSpd = lengthdir_x(25,launchDir);
