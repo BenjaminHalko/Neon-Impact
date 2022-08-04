@@ -40,7 +40,13 @@ if !global.multiplayer {
 			if (_status == 200) {
 				GLOBAL.names = array_create(4,_result.data.username);
 				global.playerSprites[oGlobalManager.playerNum][0] = sprite_add(_result.data.avatarUrl,0,false,false,0,0);
-			} 
+				for(var i = 0; i < array_length(oGlobalManager.globalScores); i++) {
+					if oGlobalManager.globalScores[i].username == _result.data.username {
+						oGlobalManager.ownGlobalScore = i;
+						break;
+					}
+				}
+			}
 		} catch(_error) { 
 			show_debug_message(_error);
 		}

@@ -288,8 +288,3 @@ if transitionPercent != 1 {
 		gpu_set_blendmode(bm_normal);
 	} else _drawSurface();
 }
-
-if instance_exists(oDoomWall) {
-	draw_set_halign(fa_left);
-	//draw_text(96,1000,string(oDoomWall.xTo)+":"+string(oDoomWall.yTo));
-}

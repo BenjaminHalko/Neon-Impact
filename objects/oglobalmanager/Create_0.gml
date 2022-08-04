@@ -30,6 +30,7 @@ number = 0;
 maxNum = 12;
 
 globalScores = []
+ownGlobalScore = -1;
 
 audioPlaying = ds_map_create();
 

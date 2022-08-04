@@ -53,18 +53,37 @@ if !global.title {
 				alone = true;
 				
 				//Update Global Scores
-				var _score = GLOBAL.scores[oGlobalManager.playerNum];
-				for(var i = array_length(oGlobalManager.globalScores); i >= 0; i--) {
-					if i != 0 and _score > oGlobalManager.globalScores[i-1].points continue;
-					if i < 3 {
-						array_insert(oGlobalManager.globalScores,i,{
-							username: GLOBAL.names[oGlobalManager.playerNum],
-							points: _score,
-							sprite: global.playerSprites[oGlobalManager.playerNum][0]
-						});
-						if array_length(oGlobalManager.globalScores) > 3 array_resize(oGlobalManager.globalScores,3);
+				with(oGlobalManager) {
+					var _score = GLOBAL.scores[playerNum];
+					if ownGlobalScore != -1 {
+						if globalScores[ownGlobalScore].points < _score {
+							globalScores[ownGlobalScore].points = _score
+							if ownGlobalScore != 0 and globalScores[ownGlobalScore-1].points < _score {
+								var _struct = globalScores[ownGlobalScore];
+								array_delete(globalScores,ownGlobalScore,1);
+								for(var i = ownGlobalScore-1; i >= 0; i--) {
+									if i != 0 and _score > globalScores[i-1].points continue;
+									array_insert(globalScores,i,_struct);
+									ownGlobalScore = i;
+									break;
+								}
+							}
+						}
+					} else {
+						for(var i = array_length(globalScores); i >= 0; i--) {
+							if i != 0 and _score > globalScores[i-1].points continue;
+							if i < 3 {
+								array_insert(globalScores,i,{
+									username: GLOBAL.names[playerNum],
+									points: _score,
+									sprite: global.playerSprites[playerNum][0]
+								});
+								ownGlobalScore = i;
+								if array_length(globalScores) > 3 array_resize(globalScores,3);
+							}
+							break;
+						}
 					}
-					break;
 				}
 				
 				var _grid = ds_grid_create(2,4);
@@ -79,12 +98,11 @@ if !global.title {
 					else if i != 0 alone = false;
 				}
 				ds_grid_destroy(_grid);
+				
 				if alone {
-					recordPercent -= 0.8 * array_length(oGlobalManager.globalScores);
+					recordPercent = 0.8 * (3 - array_length(oGlobalManager.globalScores));
 					GLOBAL.numPlayers = 1;
 				}
-				
-				
 				
 				GLOBAL.spectate = noone;
 			}
@@ -144,7 +162,7 @@ if !global.title {
 			}
 		}
 	}
-} else if transitionPercent == 1 and (oTitle.buttonPressed == 1 or oTitle.buttonMovePercent >= 0.7) {
+} else if transitionPercent == 1 and (oTitle.buttonPressed == 1 or oTitle.buttonMovePercent >= 0.7) and SYNC {
 	Transition(true);
 	if oTitle.buttonPressed == 1 {
 		oTitle.multiplayerStart = true;

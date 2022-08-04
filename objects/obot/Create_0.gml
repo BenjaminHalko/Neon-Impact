@@ -5,7 +5,7 @@ event_inherited();
 image_index = 4;
 
 maxTime = 60 * 1.7;
-timer = 60;
+timer = maxTime;
 colour = global.colours[4];
 
 launchDirSpd = 0;
@@ -16,3 +16,5 @@ fast = 0;
 allowGrow = true;
 
 target = noone;
+
+image_blend = colour;

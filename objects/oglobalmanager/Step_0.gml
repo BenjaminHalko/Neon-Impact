@@ -1,6 +1,6 @@
 /// @desc Flash Score
 
-if keyboard_check_pressed(vk_tab) or device_mouse_check_button_pressed(2,mb_left) {
+if keyboard_check_pressed(vk_shift) or device_mouse_check_button_pressed(2,mb_left) {
 	if oRender.disable {
 		oRender.disable = false;
 		application_surface_draw_enable(false);

@@ -265,6 +265,7 @@ function Transition(_change = false) {
 				y = room_height/2;
 				timer = 60;
 				fast = 0;
+				scale = 1;
 			}
 		} else instance_destroy(oBot);
 		
@@ -303,6 +304,7 @@ function Transition(_change = false) {
 		}
 		
 		with(oProjectile) {
+			if object_index == oBot continue;
 			if created instance_destroy();
 			hSpd = 0;
 			vSpd = 0;
@@ -359,28 +361,24 @@ function DefeatPlayer(_id,_destroy = false) {
 				with(oPlayer) {
 					if visible _num++
 				}
+				
+				if _num == 2 {
+					with(instance_create_layer(oDoomWall.x,oDoomWall.y,"Players",oBot)) scale = 0;
+				}
 					
 				var _dir = random(360);
 				for (var i = 0; i < 2; i++) {
-					if i == 0 and _num == 2 and !instance_exists(oBot) {
-						with(instance_create_layer(x,y,"Players",oBot)) {
-							scale = 0;
-							hSpd = lengthdir_x(13,_dir+120*i);
-							vSpd = lengthdir_y(13,_dir+120*i);
-						}
-					} else {
-						with(instance_create_layer(x,y,"Projectiles",oProjectile)) {
-							created = true;
-							noProjectileCollision = true;
-							image_angle = other.image_angle;
-							colour = global.colours[other.index];
-							colourAmount = 1;
-							hSpd = lengthdir_x(13,_dir+120*i);
-							vSpd = lengthdir_y(13,_dir+120*i);
-							image_xscale = 64/sprite_width;
-							image_yscale = image_xscale;
-							mass = 64/96;
-						}
+					with(instance_create_layer(x,y,"Projectiles",oProjectile)) {
+						created = true;
+						noProjectileCollision = true;
+						image_angle = other.image_angle;
+						colour = global.colours[other.index];
+						colourAmount = 1;
+						hSpd = lengthdir_x(13,_dir+120*i);
+						vSpd = lengthdir_y(13,_dir+120*i);
+						image_xscale = 64/sprite_width;
+						image_yscale = image_xscale;
+						mass = 64/96;
 					}
 				}
 				visible = false;

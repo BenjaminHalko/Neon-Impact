@@ -1,6 +1,6 @@
 {
-  "option_operagx_version": "1.0.0.148",
-  "option_operagx_next_version": "1.0.0.149",
+  "option_operagx_version": "1.0.0.159",
+  "option_operagx_next_version": "1.0.0.160",
   "option_operagx_game_name": "Neon Impact",
   "option_operagx_interpolate_pixels": true,
   "option_operagx_scale": 0,
@@ -14,6 +14,5 @@
   "option_operagx_publicShareUrl": "",
   "resourceVersion": "1.0",
   "name": "operagx",
-  "tags": [],
   "resourceType": "GMOperaGXOptions",
 }

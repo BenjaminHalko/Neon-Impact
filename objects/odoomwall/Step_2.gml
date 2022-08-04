@@ -35,7 +35,7 @@ if !debug {
 			}
 		}
 	
-		if _dead {
+		if _dead and SYNC {
 			PlayAudio(snDeath,0.15,x,y);
 			
 			deadObject = instance_create_layer(x,y,"Dead",oPlayerDeath);
@@ -48,28 +48,24 @@ if !debug {
 			with(oPlayer) {
 				if visible _num++
 			}
+			
+			if _num == 2 and !instance_exists(oBot) {
+				with(instance_create_layer(oDoomWall.x,oDoomWall.y,"Players",oBot)) scale = 0;
+			}
 
 			var _dir = ((360 + point_direction(other.x,other.y,x,y) - other.rotation) % 360 div 60) * 60 + other.rotation % 360 - 150;
 			for(var i = -1; i <= 1; i++) {
-				if i == 0 and _num == 2 and !instance_exists(oBot) {
-					with(instance_create_layer(x,y,"Players",oBot)) {
-						scale = 0;
-						hSpd = lengthdir_x(13,_dir+45*i);
-						vSpd = lengthdir_y(13,_dir+45*i);
-					}
-				} else {
-					with(instance_create_layer(x,y,"Projectiles",oProjectile)) {
-						created = true;
-						noProjectileCollision = true;
-						image_angle = other.image_angle;
-						colour = global.colours[other.index];
-						colourAmount = 1;
-						hSpd = lengthdir_x(13,_dir+45*i);
-						vSpd = lengthdir_y(13,_dir+45*i);
-						image_xscale = 64/sprite_width;
-						image_yscale = image_xscale;
-						mass = 64/96;
-					}
+				with(instance_create_layer(x,y,"Projectiles",oProjectile)) {
+					created = true;
+					noProjectileCollision = true;
+					image_angle = other.image_angle;
+					colour = global.colours[other.index];
+					colourAmount = 1;
+					hSpd = lengthdir_x(13,_dir+45*i);
+					vSpd = lengthdir_y(13,_dir+45*i);
+					image_xscale = 64/sprite_width;
+					image_yscale = image_xscale;
+					mass = 64/96;
 				}
 			}
 			

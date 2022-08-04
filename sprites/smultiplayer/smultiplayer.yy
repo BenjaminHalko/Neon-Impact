@@ -24,12 +24,9 @@
   "gridX": 0,
   "gridY": 0,
   "frames": [
-    {"compositeImage":{"FrameId":{"name":"03280f46-bbc2-4550-967c-5da1804940f6","path":"sprites/sMultiplayer/sMultiplayer.yy",},"LayerId":null,"resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMSpriteBitmap",},"images":[
-        {"FrameId":{"name":"03280f46-bbc2-4550-967c-5da1804940f6","path":"sprites/sMultiplayer/sMultiplayer.yy",},"LayerId":{"name":"9f66c666-42c9-4472-b3a9-dc35890d7f65","path":"sprites/sMultiplayer/sMultiplayer.yy",},"resourceVersion":"1.0","name":"","tags":[],"resourceType":"GMSpriteBitmap",},
-      ],"parent":{"name":"sMultiplayer","path":"sprites/sMultiplayer/sMultiplayer.yy",},"resourceVersion":"1.0","name":"03280f46-bbc2-4550-967c-5da1804940f6","tags":[],"resourceType":"GMSpriteFrame",},
+    {"resourceVersion":"1.1","name":"03280f46-bbc2-4550-967c-5da1804940f6","resourceType":"GMSpriteFrame",},
   ],
   "sequence": {
-    "spriteId": {"name":"sMultiplayer","path":"sprites/sMultiplayer/sMultiplayer.yy",},
     "timeUnits": 1,
     "playback": 1,
     "playbackSpeed": 30.0,
@@ -42,7 +39,7 @@
     "tracks": [
       {"name":"frames","spriteId":null,"keyframes":{"Keyframes":[
             {"id":"c362a610-b7fd-4538-9853-cfa774382499","Key":0.0,"Length":1.0,"Stretch":false,"Disabled":false,"IsCreationKey":false,"Channels":{"0":{"Id":{"name":"03280f46-bbc2-4550-967c-5da1804940f6","path":"sprites/sMultiplayer/sMultiplayer.yy",},"resourceVersion":"1.0","resourceType":"SpriteFrameKeyframe",},},"resourceVersion":"1.0","resourceType":"Keyframe`1","elementType":"SpriteFrameKeyframe",},
-          ],"resourceVersion":"1.0","resourceType":"KeyframeStore`1","elementType":"SpriteFrameKeyframe",},"trackColour":0,"inheritsTrackColour":true,"builtinName":0,"traits":0,"interpolation":1,"tracks":[],"events":[],"isCreationTrack":false,"resourceVersion":"1.0","tags":[],"resourceType":"GMSpriteFramesTrack","modifiers":[],},
+          ],"resourceVersion":"1.0","resourceType":"KeyframeStore`1","elementType":"SpriteFrameKeyframe",},"trackColour":0,"inheritsTrackColour":true,"builtinName":0,"traits":0,"interpolation":1,"tracks":[],"events":[],"isCreationTrack":false,"resourceVersion":"1.0","resourceType":"GMSpriteFramesTrack","modifiers":[],},
     ],
     "visibleRange": null,
     "lockOrigin": false,
@@ -58,14 +55,12 @@
     "yorigin": 52,
     "eventToFunction": {},
     "eventStubScript": null,
-    "parent": {"name":"sMultiplayer","path":"sprites/sMultiplayer/sMultiplayer.yy",},
     "resourceVersion": "1.4",
     "name": "sMultiplayer",
-    "tags": [],
     "resourceType": "GMSequence",
   },
   "layers": [
-    {"visible":true,"isLocked":false,"blendMode":0,"opacity":100.0,"displayName":"default","resourceVersion":"1.0","name":"9f66c666-42c9-4472-b3a9-dc35890d7f65","tags":[],"resourceType":"GMImageLayer",},
+    {"visible":true,"isLocked":false,"blendMode":0,"opacity":100.0,"displayName":"default","resourceVersion":"1.0","name":"9f66c666-42c9-4472-b3a9-dc35890d7f65","resourceType":"GMImageLayer",},
   ],
   "nineSlice": null,
   "parent": {
@@ -74,6 +69,5 @@
   },
   "resourceVersion": "1.0",
   "name": "sMultiplayer",
-  "tags": [],
   "resourceType": "GMSprite",
 }
