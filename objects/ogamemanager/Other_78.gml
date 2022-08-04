@@ -15,6 +15,12 @@ if (rollback_event_id == rollback_chat_message) {
 	if !global.title {
 		GLOBAL.scores[_id] = GLOBAL.time;
 		DefeatPlayer(_id,true);
+	} else {
+		for(var i = 0; i < 4; i++) {
+			if !GLOBAL.playersConnected[i] continue;
+			if i == oGlobalManager.playerNum oTitle.host = true;
+			break;
+		}
 	}
 } else if (rollback_event_id == rollback_connect_error) {
 	global.multiplayer = false;
@@ -41,6 +47,7 @@ if (rollback_event_id == rollback_chat_message) {
 	oTitle.connected = true;
 	var _id = rollback_event_param.player_id;
 	if _id != 0 oTitle.host = false;
+	oGlobalManager.playerNum = _id;
 	GLOBAL.numPlayers = max(GLOBAL.numPlayers,_id+1);
 	GLOBAL.playersConnected[_id] = true;
 }

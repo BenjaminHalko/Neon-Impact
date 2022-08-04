@@ -8,7 +8,6 @@ vSpd = Approach(vSpd,0,abs(lengthdir_y(FRIC,_dir)));
 
 hSpd = min(abs(hSpd),abs(lengthdir_x(maxSpd,_dir)))*sign(hSpd);
 vSpd = min(abs(vSpd),abs(lengthdir_y(maxSpd,_dir)))*sign(vSpd);
-timer = 80;
 
 if timer <= 60 and GLOBAL.roundStart and !oGameManager.stopTimer {
 	launchDirSpd += 0.5;
