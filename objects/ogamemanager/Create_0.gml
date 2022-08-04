@@ -74,7 +74,7 @@ panelXPercent = -0.5;
 recordPercent = 0;
 hexPercent = 0;
 textPercent = 0;
-timeLeft = 10;
+timeLeft = 8;
 leave = false;
 
 camPositionsX = array_create(4,0);
