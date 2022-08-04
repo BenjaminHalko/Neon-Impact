@@ -15,6 +15,8 @@
 
 #macro CHALLENGEID "d655ef5e-ed52-4228-ac58-292edf12ec3d"
 
+randomize();
+
 global.title = true;
 global.colours = [ #00FFFF, #FF0048, #55FF00, #FF9C00, #5500FF ];
 global.multiplayer = false;
