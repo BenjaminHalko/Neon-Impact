@@ -6,11 +6,13 @@ camH = camera_get_view_height(cam);
 camX = 0;
 camY = 0;
 
+spectatingWait = 10;
+
 targetX = array_create(4,0);
 targetY = array_create(4,0);
 
 follow = array_create(4,noone);
-spectate = array_create(4,false);
+GLOBAL.spectateMode = array_create(4,false);
 
 shakeRemain = 0;
 shakeLength = 0;

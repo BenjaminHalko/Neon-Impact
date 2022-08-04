@@ -1,6 +1,6 @@
 /// @desc
 
-if noProjectileCollision or other.noProjectileCollision or !SYNC exit;
+if noProjectileCollision or other.noProjectileCollision exit;
 
 var _otherSpd = sqrt(sqr(other.hSpd) + sqr(other.vSpd));
 

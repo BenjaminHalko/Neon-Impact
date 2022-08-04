@@ -9,7 +9,10 @@ if !surface_exists(surfacePing) {
 	surfacePing = surface_create(1920,1080);
 }
 if !surface_exists(surfacePong) surfacePong = surface_create(1920,1080);
-if !surface_exists(viewSurface) viewSurface = surface_create(1920,1080);
+if !surface_exists(viewSurface) {
+	viewSurface = surface_create(1920,1080);
+	view_set_surface_id(0,viewSurface);
+}
 
 //Bloom
 surface_set_target(surfacePing);
@@ -33,6 +36,6 @@ gpu_set_blendmode(bm_normal);
 
 draw_surface(guiSurface,0,0);
 
-if room == rTitle {
+if global.title {
 	with(oTitle) drawTitleOutline();
 }

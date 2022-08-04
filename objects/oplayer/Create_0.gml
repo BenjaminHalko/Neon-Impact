@@ -11,7 +11,7 @@ oGameManager.camPositionsY[index] = y - 540;
 
 if global.multiplayer {
 	var _info = rollback_get_info(index);
-	if _info.player_type == "User" global.names[index] = _info.player_name;
+	if _info.player_type == "User" GLOBAL.names[index] = _info.player_name;
 }
 
 image_angle = irandom(360);
@@ -25,7 +25,7 @@ launchDir = image_angle;
 launchDist = 0;
 launchLenMax = 300;
 launchSpd = 30;
-maxSpd = 50;
+maxSpd = 40;
 
 dead = false;
 deadObject = noone;

@@ -5,9 +5,5 @@ if mode {
 	if linePercent > 1.6 and abs(1 - fadePercent % 2) > 0.95 fadePercent = 0;
 	else fadePercent += lerp(1 / flashSpd, 0.1, linePercent/2);
 	ScreenShake(8*(2-linePercent)/2,10,x,y);
-	if linePercent == 2 {
-		instance_destroy();
-		if(os_type != os_operagx) or !global.multiplayer oGameManager.gotScores[index] = true;
-		else if global.multiplayer and index == oGlobalManager.playerNum and !oGameManager.gotScores[index] rollback_chat(string(global.scores[index]));
-	}
+	if linePercent == 2 instance_destroy();
 } else ScreenShake(12,30,x,y);

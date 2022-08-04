@@ -8,7 +8,7 @@ if !visible {
 		// Feather disable once GM1013
 		// Feather disable once GM1011
 		if player_local SPECTATING = true;
-		else if(!global.playersConnected[index]) instance_destroy();
+		else if(!GLOBAL.playersConnected[index]) instance_destroy();
 	}
 	exit;
 }
@@ -37,7 +37,7 @@ if _input.mouseLeft {
 	if launchDist > 0 launchDir = point_direction(mouseX,mouseY,mouseClickX,mouseClickY);
 } else if drawingLine {
 	drawingLine = false;
-	if global.roundStart and SYNC {
+	if GLOBAL.roundStart {
 		var _speed = launchSpd * min(1,launchDist/launchLenMax);
 		hSpd = lengthdir_x(_speed,launchDir) + hSpd / 2;
 		vSpd = lengthdir_y(_speed,launchDir) + vSpd / 2;

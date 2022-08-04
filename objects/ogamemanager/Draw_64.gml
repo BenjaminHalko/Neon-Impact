@@ -1,9 +1,9 @@
 /// @desc Draw Time + Other On Screen Things
 
-if room == rGame {
+if !global.title {
 	draw_set_font(GuiFont);
 
-	if !global.gameOver {
+	if !GLOBAL.gameOver {
 
 		var _alpha;
 		with(oPlayer) {
@@ -78,7 +78,7 @@ if room == rGame {
 		draw_set_valign(fa_top);
 		draw_set_color(c_white);
 
-		if SPECTATING {
+		if SPECTATING and oCamera.spectatingWait == 0 {
 			draw_set_valign(fa_bottom);
 			draw_set_alpha(Wave(0.5,0.7,4,0));
 			draw_text(960,1060,"SPECTATING");
@@ -86,10 +86,10 @@ if room == rGame {
 			draw_set_valign(fa_top);
 		}
 
-		var _time = global.time;
+		var _time = GLOBAL.time;
 
-		if global.scores[oGlobalManager.playerNum] != 0 and oGlobalManager.number != oGlobalManager.maxNum {
-			_time = global.scores[oGlobalManager.playerNum];
+		if GLOBAL.scores[oGlobalManager.playerNum] != 0 and oGlobalManager.number != oGlobalManager.maxNum {
+			_time = GLOBAL.scores[oGlobalManager.playerNum];
 			if oGlobalManager.number % 2 exit;
 		}
 
@@ -138,7 +138,7 @@ if room == rGame {
 		var _global = oGlobalManager.globalScores;
 		for(var i = 0; i < 3; i++) {
 			_player = winOrder[i+1];
-			if global.scores[_player] == 0 and (!alone or array_length(_global) <= i) continue;
+			if GLOBAL.scores[_player] == 0 and (!alone or array_length(_global) <= i) continue;
 			_percent = animcurve_channel_evaluate(xRecordCurve,min(1,recordPercent-0.8*(2-i)))
 			_scale = 1 - (i != 0) * 0.15 - (i == 2) * 0.1;
 			_x = _panelX - 1200 + 250 - 50 * i - 100 / _scale * (1 - _percent);
@@ -146,8 +146,8 @@ if room == rGame {
 		
 			draw_sprite_ext(sRanking,0,_x+lengthdir_x(20,-30),_y+lengthdir_y(20,-30),_scale,_scale,0,global.colours[_player],_percent);
 			draw_sprite_ext(sRanking,0,_x,_y,_scale,_scale,0,c_black,_percent);
-		
-			if !alone and !sprite_exists(global.playerSprites[_player][0]) {
+			
+			if !sprite_exists(alone ? _global[i].sprite : global.playerSprites[_player][0]) {
 				draw_sprite_ext(sDefaultIcons,_player,_x+25*_scale,_y+15*_scale,100/defaultIconSize*_scale,100/defaultIconSize*_scale,0,c_white,_percent);
 			}
 		}
@@ -171,42 +171,42 @@ if room == rGame {
 		draw_line_width(_hexX-200,280,_hexX+200,280,5);
 		draw_set_alpha(animcurve_channel_evaluate(xMoveCurve,median(textPercent-1,1,0)));
 	
-		_textScale = min(1.5,460/string_width(global.names[winOrder[0]]))
+		_textScale = min(1.5,460/string_width(GLOBAL.names[winOrder[0]]))
 		draw_set_valign(fa_middle);
-		draw_text_transformed(_hexX,345,global.names[winOrder[0]],_textScale,max(1.2,_textScale),0);
+		draw_text_transformed(_hexX,345,GLOBAL.names[winOrder[0]],_textScale,max(1.2,_textScale),0);
 	
 		draw_set_valign(fa_top);
-		draw_text_transformed(_hexX,410,string(global.scores[winOrder[0]] div 60)+":"+string_replace(string_format(global.scores[winOrder[0]] % 60,2,2)," ","0"),1.5,1.5,0);
+		draw_text_transformed(_hexX,410,string(GLOBAL.scores[winOrder[0]] div 60)+":"+string_replace(string_format(GLOBAL.scores[winOrder[0]] % 60,2,2)," ","0"),1.5,1.5,0);
 		draw_set_alpha(1);
 	
 		//Next Round In:
 		draw_set_color(c_black);
 		draw_set_halign(fa_left);
 		draw_text_transformed(_panelX-1096,44,"Next Round In: "+string_replace(string_format(floor(max(0,timeLeft)),2,0)," ","0"),1.5,1.5,0);
-		if global.numPlayers == 1 draw_text(_panelX-996,104,"Or Click Anywhere");
+		if GLOBAL.numPlayers == 1 draw_text(_panelX-996,104,"Or Click Anywhere");
 
 		draw_set_color(global.colours[4]);
 		draw_text_transformed(_panelX-1100,40,"Next Round In: "+string_replace(string_format(floor(max(0,timeLeft)),2,0)," ","0"),1.5,1.5,0);
-		if global.numPlayers == 1 draw_text(_panelX-1000,100,"Or Click Anywhere");
+		if GLOBAL.numPlayers == 1 draw_text(_panelX-1000,100,"Or Click Anywhere");
 
 		gpu_set_tex_filter(_texFilter);
 	
 		for(var i = 0; i < 3; i++) {
 			_percent = animcurve_channel_evaluate(xRecordCurve,min(1,recordPercent-0.8*(2-i)));
 			_player = winOrder[i+1];
-			if global.scores[_player] == 0 and (!alone or array_length(_global) <= i) continue;
+			if GLOBAL.scores[_player] == 0 and (!alone or array_length(_global) <= i) continue;
 			_scale = 1 - (i != 0) * 0.15 - (i == 2) * 0.1;
 			_x = _panelX - 1200 + 250 - 50 * i - 100 / _scale * (1 - _percent);
 			_y = 280+200*i+30*(i != 0);
 			draw_set_alpha(_percent);
 		
-			var _score = global.scores[_player];
-			var _name = global.names[_player];
+			var _score = GLOBAL.scores[_player];
+			var _name = GLOBAL.names[_player];
 		
 			if alone {
 				_score = _global[i].points;
 				_name = _global[i].username;
-				draw_sprite_ext(_global[i].sprite,0,_x+25*_scale,_y+15*_scale,100/defaultIconSize*_scale,100/defaultIconSize*_scale,0,c_white,_percent);
+				if sprite_exists(_global[i].sprite) draw_sprite_ext(_global[i].sprite,0,_x+25*_scale,_y+15*_scale,100/defaultIconSize*_scale,100/defaultIconSize*_scale,0,c_white,_percent);
 			} else if sprite_exists(global.playerSprites[_player][0])
 				draw_sprite_ext(global.playerSprites[_player][0],0,_x+25*_scale,_y+15*_scale,100/defaultIconSize*_scale,100/defaultIconSize*_scale,0,c_white,_percent);
 		
@@ -227,16 +227,6 @@ if room == rGame {
 	
 		draw_set_alpha(1);
 	}
-}
-
-//Warning
-if global.gameOver and !gameOverScreenAppear and global.numPlayers != 1 {
-	draw_set_color(c_red);
-	draw_set_alpha(0.7);
-	draw_set_halign(fa_center);
-	draw_set_valign(fa_bottom);
-	draw_text(960,1060,"WARNING: DESYNC MAY HAVE OCCURED");
-	draw_set_alpha(1);
 }
 
 //Transition
@@ -297,4 +287,9 @@ if transitionPercent != 1 {
 		draw_surface_ext(oGlobalManager.transitionSurfacePong,0,0,1,1,0,c_black,1);
 		gpu_set_blendmode(bm_normal);
 	} else _drawSurface();
+}
+
+if instance_exists(oDoomWall) {
+	draw_set_halign(fa_left);
+	//draw_text(96,1000,string(oDoomWall.xTo)+":"+string(oDoomWall.yTo));
 }

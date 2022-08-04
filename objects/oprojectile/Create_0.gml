@@ -8,10 +8,11 @@ maxSpd = 60;
 collisionWidth = 124*image_xscale;
 
 colour = c_white;
-launchDir = irandom(360);
+launchDir = random(360);
 image_angle = launchDir;
 
 noProjectileCollision = false;
 dead = false;
 
 created = false;
+outSideOfWall = true;

@@ -4,18 +4,14 @@ wallPercent = 1;
 surface = surface_create(1920,1080);
 fullScreenSurface = surface_create(room_width,room_height);
 
-startMaxLen = room_width/2-100;
-startMinLen = 2300;
+startMaxLen = 2600;
+startMinLen = 2200;
 
 rotation = 0;
-maxLen = 0;
-maxLenMax = 800;
-minLen = 0;
-minLenMax = 500;
-
-wallSpd = 0;
-
-wallSpdArray = [0.0014,0.001,0.0007,0.0005];
+maxLen = startMaxLen;
+maxLenMax = 700;
+minLen = startMinLen;
+minLenMax = 700;
 
 wallLen = startMaxLen;
 disappear = 0;

@@ -1,5 +1,10 @@
 /// @desc Initialize Multiplayer
 
+GLOBAL.camZoom = 0;
+GLOBAL.numPlayers = 1;
+GLOBAL.names = ["PLAYER 1","PLAYER 2", "PLAYER 3", "PLAYER 4"];
+GLOBAL.playersConnected = [false,false,false,false];
+
 if global.multiplayer {
 	try {
 		rollback_use_manual_start();
@@ -16,8 +21,8 @@ if global.multiplayer {
 			rollback_create_game(4,_test);
 		}
 		if _test {
-			global.playersConnected = array_create(4,true);
-			global.numPlayers = 4;
+			GLOBAL.playersConnected = array_create(4,true);
+			GLOBAL.numPlayers = 4;
 			oTitle.connected = true;
 		}
 	} catch(_error) {
@@ -28,12 +33,12 @@ if global.multiplayer {
 
 if !global.multiplayer {
 	oGlobalManager.playerNum = irandom(3);
-	global.playersConnected[oGlobalManager.playerNum] = true;
-	global.names = array_create(4,"PLAYER 1");
+	GLOBAL.playersConnected[oGlobalManager.playerNum] = true;
+	GLOBAL.names = array_create(4,"PLAYER 1");
 	gxc_profile_get_info(function(_status, _result) {
 		try {
 			if (_status == 200) {
-				global.names = array_create(4,_result.data.username);
+				GLOBAL.names = array_create(4,_result.data.username);
 				global.playerSprites[oGlobalManager.playerNum][0] = sprite_add(_result.data.avatarUrl,0,false,false,0,0);
 			} 
 		} catch(_error) { 
@@ -42,23 +47,22 @@ if !global.multiplayer {
 	});
 }
 
-global.roundStart = false;
+GLOBAL.roundStart = false;
 
-global.scores = array_create(4,0);
-global.time = 0;
+GLOBAL.scores = array_create(4,0);
+GLOBAL.time = 0;
 
-global.spectate = noone;
+GLOBAL.spectate = noone;
 spectatorNumber = 0;
-
-rollbackSubtrackFrame = 0;
 
 tanAngle = darctan(540/960);
 
+test = 0;
+
 //GameOver
-global.gameOver = false;
+GLOBAL.gameOver = false;
 stopTimer = false;
 alone = false;
-gameOverScreenAppear = false;
 
 panelXPercent = -0.5;
 recordPercent = 0;

@@ -4,13 +4,32 @@ function Collision(_collider,_restitution) {
 	var _x = (_collider.x-x) * 1/_dist;
 	var _y = (_collider.y-y) * 1/_dist;
 	
+	if object_index == oPlayer and _collider.object_index != oPlayer {
+		var _len = max(10,point_distance(0,0,hSpd,vSpd));
+		hSpd = lengthdir_x(_len,point_direction(x,y,_collider.x,_collider.y));
+		vSpd = lengthdir_y(_len,point_direction(x,y,_collider.x,_collider.y));
+		
+		if _collider.object_index == oProjectile {
+			_len = max(10/_collider.mass,point_distance(0,0,_collider.hSpd,_collider.vSpd));
+			_collider.hSpd = lengthdir_x(_len,point_direction(_collider.x,_collider.y,x,y));
+			_collider.vSpd = lengthdir_y(_len,point_direction(_collider.x,_collider.y,x,y));
+		}
+	}
+	
+	if object_index == oProjectile and _collider.object_index == oWall and point_distance(0,0,hSpd,vSpd) < 10 {
+		for(var i = 0; i < 6; i++) {
+			if point_in_triangle(x,y,oDoomWall.x,oDoomWall.y,oDoomWall.x+lengthdir_x(oDoomWall.wallLen,i*360/6+oDoomWall.rotation),oDoomWall.y+lengthdir_y(oDoomWall.wallLen,i*360/6+oDoomWall.rotation),oDoomWall.x+lengthdir_x(oDoomWall.wallLen,(i+1)*360/6+oDoomWall.rotation),oDoomWall.y+lengthdir_y(oDoomWall.wallLen,(i+1)*360/6+oDoomWall.rotation)) {
+				hSpd = lengthdir_x(10,point_direction(x,y,_collider.x,_collider.y));
+				vSpd = lengthdir_y(10,point_direction(x,y,_collider.x,_collider.y));
+				break;
+			}
+		}
+	}
 	
 	var _v1 = dot_product(hSpd,vSpd,_x,_y);
-	var _v2;
+	var _v2 = 0;
 	
-	if _collider.object_index != oWall {
-		_v2 = dot_product(_collider.hSpd,_collider.vSpd,_x,_y);
-	} else _v2 = 0;
+	if _collider.object_index != oWall _v2 = dot_product(_collider.hSpd,_collider.vSpd,_x,_y);
 	
 	if sign(_v1) != 1 and sign(_v2) != 1 return;
 	

@@ -2,6 +2,8 @@
 
 // The rest of the camera code is in oGameManager because of rollback issues. :(
 
+if GLOBAL.spectateMode[oGlobalManager.playerNum] spectatingWait = Approach(spectatingWait,0,1);
+
 //Shake
 shakeRemain = max(0, shakeRemain - ((1/shakeLength) * shakeMagnitude));
 
