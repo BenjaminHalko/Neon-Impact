@@ -2,12 +2,10 @@
 
 if PAUSE exit;
 
-if !surface_exists(surface) surface = surface_create(1920,1080);
-
 if !GLOBAL.roundStart {
-	if !surface_exists(fullScreenSurface) {
+	if oRender.disable != 2 and !global.mobile and !surface_exists(fullScreenSurface) {
 		fullScreenSurface = surface_create(room_width,room_height);
-		drawWall(0,0,fullScreenSurface,room_width,room_height);
+		drawFullScreenSurface();
 	}
 	exit;
 }

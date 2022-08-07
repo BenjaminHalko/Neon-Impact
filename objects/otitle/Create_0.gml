@@ -3,24 +3,26 @@
 roomWidth = 1920;
 roomHeight = 1080;
 
+allowMultiplayer = global.operaGX or SYNCTEST;
+
 buttons = [{
-	startX: 1100,
+	startX: 1100+100*(!allowMultiplayer),
 	x: 0,
-	y: 880,
-	scale: 0.8,
+	y: 880-200*(!allowMultiplayer),
+	scale: 0.8+0.2*(!allowMultiplayer),
 	hovered: 0,
 	text: "SINGLEPLAYER",
 	col: global.colours[4],
-	textScale: 1
+	textScale: 1+0.3*(!allowMultiplayer)
 },{
-	startX: 1200,
+	startX: 1200-100*(!allowMultiplayer),
 	x: 0,
-	y: 680,
-	scale: 1,
+	y: 680+200*(!allowMultiplayer),
+	scale: 1-0.2*(!allowMultiplayer),
 	hovered: 0,
 	text: "MULTIPLAYER",
 	col: global.colours[1],
-	textScale: 1.3
+	textScale: 1.3-0.3*(!allowMultiplayer)
 }];
 
 buttonWidth = sprite_get_width(sRanking);
@@ -99,8 +101,8 @@ for(var j = -(roomHeight % _height)-8; j < roomHeight; j += _height) {
 	}
 }
 
-drawTitleOutline = function() {
-	draw_sprite_ext(sTitle,1,titleX,titleY,titleScale,titleScale,0,c_white,1);
+drawTitleOutline = function(_scale = 1) {
+	draw_sprite_ext(sTitle,1,titleX*_scale,titleY*_scale,titleScale*_scale,titleScale*_scale,0,c_white,1);
 }
 
 if(gxc_get_query_param("roomUrl") != undefined) {

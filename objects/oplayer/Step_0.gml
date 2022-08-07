@@ -19,8 +19,8 @@ if global.multiplayer _input = rollback_get_input();
 else _input = {
 	mouseLeft: mouse_check_button(mb_left),
 	mouseLeft_pressed: mouse_check_button_pressed(mb_left),
-	mouseX: window_mouse_get_x(),
-	mouseY: window_mouse_get_y()
+	mouseX: global.isBrowser ? display_mouse_get_x()*1920/global.resW : (window_view_mouse_get_x(0)-CamXReal)*1920/CamW,
+	mouseY: global.isBrowser ? display_mouse_get_y()*1080/global.resH : (window_view_mouse_get_y(0)-CamYReal)*1080/CamH
 };
 
 if _input.mouseLeft {

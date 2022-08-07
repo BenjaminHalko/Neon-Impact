@@ -1,4 +1,3 @@
-/// @desc Free Surfaces
+/// @desc Free Surface
 
-surface_free(surface);
 surface_free(fullScreenSurface);

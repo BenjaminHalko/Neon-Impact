@@ -107,6 +107,7 @@ function RenderConverArt(_sprite) {
 
 	surface_set_target(_surfacePong);
 	shader_set(shBlur);
+	shader_set_uniform_f(oRender.uTexelSize,1/1080,1/1080);
 	shader_set_uniform_f(oRender.uBlurVector,0,1);
 	draw_surface(_surfacePing,0,0);
 	surface_reset_target();
@@ -185,23 +186,21 @@ function Transition(_change = false) {
 	if !SYNC exit;
 	with(oGameManager) {
 		if !surface_exists(oGlobalManager.transitionSurfacePing) oGlobalManager.transitionSurfacePing = surface_create(1920,1080);
-		if !surface_exists(oGlobalManager.transitionSurfacePong) transitionSurfacePong = surface_create(1920,1080);
+		if !surface_exists(oGlobalManager.transitionSurfacePong) oGlobalManager.transitionSurfacePong = surface_create(1920,1080);
+		
 		transitionChange = _change;
 		transitionPercent = 0;
 		
 		if _change {
 			surface_set_target(oGlobalManager.transitionSurfacePing);
-			draw_sprite_ext(sDoomWall,0,0,0,1920/48,1080/40,0,c_white,1);
+			draw_sprite_ext(sDoomWall,0,0,0,1920/sprite_get_width(sDoomWall),1080/sprite_get_height(sDoomWall),0,c_white,1);
 			surface_reset_target();
 		} else {
 			audio_play_sound(snRoundStart,1,false,0.25*oGlobalManager.sfxVol);
-			var _surface = view_get_surface_id(0);
-			_surface = _surface == -1 ? application_surface : _surface;
-			if surface_exists(_surface) {
-				surface_set_target(oGlobalManager.transitionSurfacePing);
-				draw_surface(_surface,0,0);
-				surface_reset_target();
-			}
+			var _surface = oRender.disable ? application_surface : oRender.viewSurface;
+			surface_set_target(oGlobalManager.transitionSurfacePing);
+			draw_surface_ext(_surface,0,0,1920/global.resW,1080/global.resH,0,c_white,1);
+			surface_reset_target();
 		}
 	}
 	
@@ -210,7 +209,7 @@ function Transition(_change = false) {
 		GLOBAL.gameOver = false;
 		GLOBAL.scores = array_create(4,0);
 		GLOBAL.time = 0;
-		GLOBAL.camZoom = 0;
+		GLOBAL.camZoom = oRender.disable == 2 or (global.mobile and oRender.disable);
 		
 		instance_destroy(oPlayerDeath);
 		
@@ -224,7 +223,6 @@ function Transition(_change = false) {
 			leave = false;
 			gotScores = array_create(4,false);
 			gameOverScreenAppear = false;
-			desyncTime = 60;
 		}
 		
 		with(oGlobalManager) {
@@ -235,6 +233,9 @@ function Transition(_change = false) {
 					GLOBAL.names = array_create(4,GLOBAL.names[playerNum]);
 					oCamera.follow = array_create(4,oCamera.follow[playerNum]);
 					switchedToSinglePlayer = true;
+					with(oPlayer) {
+						if index != other.playerNum instance_destroy();	
+					}
 				}
 				playerNum = irandom(3);
 				GLOBAL.playersConnected = array_create(4,false);
@@ -392,4 +393,87 @@ function DefeatPlayer(_id,_destroy = false) {
 			break;
 		}
 	}
+}
+
+function ScaleCanvas() {
+	if (variable_global_exists("browserWidth") and global.browserWidth == browser_width and global.browserHeight == browser_height) return;
+	global.browserWidth = browser_width;
+	global.browserHeight = browser_height;
+	
+	var _aspect = 1920/1080;
+	if ((global.browserWidth / _aspect) > global.browserHeight) window_set_size((global.browserHeight *_aspect), global.browserHeight);
+	else window_set_size(global.browserWidth, (global.browserWidth / _aspect));
+	window_center();
+	
+	global.resW = min(window_get_width(), 1920);
+	global.resH = min(window_get_height(), 1080);
+	view_set_wport(0,global.resW);
+	view_set_hport(0,global.resH);
+	surface_resize(application_surface, global.resW, global.resH);
+	
+	display_set_gui_size(1920,1080);
+	
+	with(oRender) {
+		if surface_exists(viewSurface) surface_resize(viewSurface,global.resW,global.resH);
+		if surface_exists(surfacePing) surface_resize(surfacePing,global.resW,global.resH);
+		if surface_exists(surfacePong) surface_resize(surfacePong,global.resW,global.resH);
+	}
+}
+
+function line_in_rectangle (lx1, ly1, lx2, ly2, rx1, ry1, rx2, ry2) {
+	if point_in_rectangle(lx1,ly1,rx1,ry1,rx2,ry2) or point_in_rectangle(lx2,ly2,rx1,ry1,rx2,ry2) return true;
+	
+	function slope(x1, y1, x2, y2){
+	  return (y2-y1)/(x2-x1);
+	}
+	function intercept(x1, y1, x2, y2){
+	  var s = slope(x1, y1, x2, y2);
+	  return y1 - x1 * s;
+	}
+	function solve_x_equation(slope, intercept, x){
+	  // y = slope * x + intercept
+	  // x = some number, we just replace x with its value to find y
+	  return slope * x + intercept;
+	}
+	function solve_y_equation(slope, intercept, y){
+	  // y = slope * x + intercept
+	  // y = some number, we just replace y with its value to find x
+	  //careful here to find x you need to divide by slope, which might happen to be 0;
+	  return (y - intercept)/slope;
+	}
+
+	function is_between(min, val, max, incl){
+	  //i like this function it helps me a lot
+	  return incl ? (min <= val && val <= max) : (min < val && val < max);
+	}
+	
+	var solution = false;
+
+	if (lx1 != lx2){ //we need this because we unfortunately cannot use the same method if the line is vertical
+	var s = slope(lx1, ly1, lx2, ly2);
+	var i = intercept(lx1, ly1, lx2, ly2);
+    
+	//now let's try solving the equations
+	var soly1 = solve_x_equation(s, i, rx1);
+	var soly2 = solve_x_equation(s, i, rx2);
+
+	solution = is_between(ry1, soly1, ry2, true) or is_between(ry1, soly2, ry2, true);
+    
+	if (s != 0){ //we also need to check if slope is not 0 before trying to find a solution with horizontal lines;
+		var solx1 = solve_y_equation(s, i, ry1);
+		var solx2 = solve_y_equation(s, i, ry2);
+        
+		solution = solution or is_between(rx1, solx1, rx2, true) or is_between(rx1, solx2, rx2, true);
+      
+	} 
+	//the is_between is used to check if the found solution is between the rectangle boundaries, because it might not;
+	return solution
+
+	} else {
+    
+		//this is where it's vertical, so we know it intersects with horizontal lines
+	return is_between(rx1, lx1, rx2, true) or is_between(rx1, lx2, rx2, true);
+
+	}
+
 }

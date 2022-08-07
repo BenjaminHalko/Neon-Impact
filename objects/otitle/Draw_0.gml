@@ -4,8 +4,13 @@ draw_set_halign(fa_center);
 draw_set_valign(fa_middle);
 draw_set_font(GuiFont);
 
-draw_sprite(sMultiplayer,0,buttons[1].x+buttonWidth/2,buttons[1].y-buttons[1].hovered*160+70);
-draw_sprite_ext(sSingleplayer,0,buttons[0].x+270+270*buttons[0].hovered,buttons[0].y+60,1,1,15,c_white,1);
+if allowMultiplayer {
+	draw_sprite(sMultiplayer,0,buttons[1].x+buttonWidth/2,buttons[1].y-buttons[1].hovered*160+70);
+	draw_sprite_ext(sSingleplayer,0,buttons[0].x+270+270*buttons[0].hovered,buttons[0].y+60,1,1,15,c_white,1);
+} else {
+	draw_sprite_ext(sMultiplayer,0,buttons[1].x+280+350*buttons[1].hovered,buttons[1].y+60,0.7,0.7,0,c_white,1);
+	draw_sprite_ext(sSingleplayer,0,buttons[0].x+buttonWidth/2-60,buttons[0].y-buttons[0].hovered*160+70,1,1,15,c_white,1);
+}
 
 if buttonMovePercent != 1.1 {
 	for(var i = 0; i < 2; i++) {

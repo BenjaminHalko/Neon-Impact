@@ -2,8 +2,13 @@
 
 shift += 0.005;
 
-var _mouseX = window_mouse_get_x();
-var _mouseY = window_mouse_get_y();
+var _mouseX = window_view_mouse_get_x(0);
+var _mouseY = window_view_mouse_get_y(0);
+
+if global.isBrowser {
+	_mouseX = display_mouse_get_x() * 1920 / global.resW;
+	_mouseY = display_mouse_get_y() * 1080 / global.resH;
+}
 
 if buttonPressed != -1 {
 	buttonMovePercent = Approach(buttonMovePercent,1.1,0.02);	
@@ -22,9 +27,11 @@ if buttonPressed != -1 {
 		if point_in_rectangle(_mouseX,_mouseY,buttons[i].x,buttons[i].y,buttons[i].x+buttonWidth*buttons[i].scale+lengthdir_x(20,-120),buttons[i].y+buttonHeight*buttons[i].scale+lengthdir_y(20,-120)) {
 			buttons[i].hovered = ApproachFade(buttons[i].hovered,1,0.2,0.8);
 			if mouse_check_button_pressed(mb_left) {
-				buttonPressed = i;
-				global.multiplayer = i;
-				instance_create_layer(0,0,layer,oGameManager);
+				if i == 0 or allowMultiplayer {
+					buttonPressed = i;
+					global.multiplayer = i;
+					instance_create_layer(0,0,layer,oGameManager);
+				} else url_open("https://gxc.gg/games/mc6y9k/neon-impact/");
 			}
 		} else buttons[i].hovered = ApproachFade(buttons[i].hovered,0,0.2,0.8);
 	}

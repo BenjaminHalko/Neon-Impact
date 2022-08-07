@@ -1,6 +1,6 @@
 /// @desc Initialize Multiplayer
 
-GLOBAL.camZoom = 0;
+GLOBAL.camZoom = oRender.disable == 2 or (global.mobile and oRender.disable);
 GLOBAL.numPlayers = 1;
 GLOBAL.names = ["PLAYER 1","PLAYER 2", "PLAYER 3", "PLAYER 4"];
 GLOBAL.playersConnected = [false,false,false,false];
@@ -14,13 +14,11 @@ if global.multiplayer {
 			mouseX: m_axisx_gui,
 			mouseY: m_axisy_gui
 		});
-		
-		var _test = os_type != os_operagx;
 
 		if !rollback_join_game() {
-			rollback_create_game(4,_test);
+			rollback_create_game(4,!global.operaGX);
 		}
-		if _test {
+		if !global.operaGX {
 			GLOBAL.playersConnected = array_create(4,true);
 			GLOBAL.numPlayers = 4;
 			oTitle.connected = true;
@@ -60,10 +58,6 @@ GLOBAL.time = 0;
 
 GLOBAL.spectate = noone;
 spectatorNumber = 0;
-
-tanAngle = darctan(540/960);
-
-test = 0;
 
 //GameOver
 GLOBAL.gameOver = false;

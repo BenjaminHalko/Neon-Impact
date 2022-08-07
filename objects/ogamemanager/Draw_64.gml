@@ -4,6 +4,7 @@ if !global.title {
 	draw_set_font(GuiFont);
 
 	if !GLOBAL.gameOver {
+		var _tanAngle = darctan(540/960);
 
 		var _alpha;
 		with(oPlayer) {
@@ -20,9 +21,9 @@ if !global.title {
 			var _len = 0;
 			var _dir = point_direction(CamW/2,CamH/2,x-CamX,y-CamY);
 	
-			if _dir > other.tanAngle and _dir <= 180-other.tanAngle _len = 500/dcos(_dir-90);
-			else if _dir > 180-other.tanAngle and _dir <= 180+other.tanAngle _len = 920/dcos(_dir-180);
-			else if _dir > 180+other.tanAngle and _dir <= 360-other.tanAngle _len = -500/dcos(_dir-90);
+			if _dir > _tanAngle and _dir <= 180-_tanAngle _len = 500/dcos(_dir-90);
+			else if _dir > 180-_tanAngle and _dir <= 180+_tanAngle _len = 920/dcos(_dir-180);
+			else if _dir > 180+_tanAngle and _dir <= 360-_tanAngle _len = -500/dcos(_dir-90);
 			else _len = -920/dcos(_dir-180);
 	
 			var _x = 960+lengthdir_x(_len,_dir);
@@ -50,9 +51,9 @@ if !global.title {
 			var _len = 0;
 			var _dir = point_direction(CamW/2,CamH/2,x-CamX,y-CamY);
 	
-			if _dir > other.tanAngle and _dir <= 180-other.tanAngle _len = 500/dcos(_dir-90);
-			else if _dir > 180-other.tanAngle and _dir <= 180+other.tanAngle _len = 920/dcos(_dir-180);
-			else if _dir > 180+other.tanAngle and _dir <= 360-other.tanAngle _len = -500/dcos(_dir-90);
+			if _dir > _tanAngle and _dir <= 180-_tanAngle _len = 500/dcos(_dir-90);
+			else if _dir > 180-_tanAngle and _dir <= 180+_tanAngle _len = 920/dcos(_dir-180);
+			else if _dir > 180+_tanAngle and _dir <= 360-_tanAngle _len = -500/dcos(_dir-90);
 			else _len = -920/dcos(_dir-180);
 	
 			var _x = 960+lengthdir_x(_len,_dir);
@@ -99,40 +100,46 @@ if !global.title {
 	
 		var _texFilter = gpu_get_tex_filter();
 	
+		var _winScale = 1;
 		if !oRender.disable {
 			surface_reset_target();
+			if !surface_exists(oRender.viewSurface) {
+				oRender.viewSurface = surface_create(global.resW,global.resH);
+				view_set_surface_id(0,oRender.viewSurface);
+			}
 			surface_set_target(oRender.viewSurface);
+			_winScale = global.resW/1920;
 		}
-	
+		
 		//Panels
 		draw_set_alpha(0.3);
 		draw_set_color(global.colours[4]);
 		_panelX = 1155*animcurve_channel_evaluate(xMoveCurve,panelXPercent)-5;
-		draw_triangle(_panelX,-1,_panelX-600,-1,_panelX-600,1080,false);
-		draw_rectangle(0,0,_panelX-600-(os_type == os_operagx),1080,false);
+		draw_triangle(_panelX*_winScale,-1*_winScale,(_panelX-600)*_winScale,-1*_winScale,(_panelX-600)*_winScale,1080*_winScale,false);
+		draw_rectangle(0,0,(_panelX-600-global.operaGX-global.mobile)*_winScale,1080*_winScale,false);
 		draw_set_alpha(1);
 	
 		_hexX = lerp(2250,1500,animcurve_channel_evaluate(xMoveCurve,min(hexPercent,1))*animcurve_channel_evaluate(xMoveCurve,panelXPercent));
 		_y = 150 * animcurve_channel_evaluate(yHexCurve,max(hexPercent-1,0));
 		draw_primitive_begin(pr_trianglelist);
 		for(var i = 0; i < 6; i++) {
-			draw_vertex(_hexX,540);
-			draw_vertex(_hexX+lengthdir_x(320,30+60*i),540+lengthdir_y(320,30+60*i)+_y*(1-(i <= 2)*2));
-			draw_vertex(_hexX+lengthdir_x(320,90+60*i),540+lengthdir_y(320,90+60*i)+_y*(1-((i+1) % 6 <= 2)*2));
+			draw_vertex(_hexX*_winScale,540*_winScale);
+			draw_vertex((_hexX+lengthdir_x(320,30+60*i))*_winScale,(540+lengthdir_y(320,30+60*i)+_y*(1-(i <= 2)*2))*_winScale);
+			draw_vertex((_hexX+lengthdir_x(320,90+60*i))*_winScale,(540+lengthdir_y(320,90+60*i)+_y*(1-((i+1) % 6 <= 2)*2))*_winScale);
 		}
 		draw_primitive_end();
 	
 		draw_set_color(c_black)
 		draw_primitive_begin(pr_trianglelist);
 		for(var i = 0; i < 6; i++) {
-			draw_vertex(_hexX,540);
-			draw_vertex(_hexX+lengthdir_x(300,30+60*i),540+lengthdir_y(300,30+60*i)+_y*(1-(i <= 2)*2));
-			draw_vertex(_hexX+lengthdir_x(300,90+60*i),540+lengthdir_y(300,90+60*i)+_y*(1-((i+1) % 6 <= 2)*2));
+			draw_vertex(_hexX*_winScale,540*_winScale);
+			draw_vertex((_hexX+lengthdir_x(300,30+60*i))*_winScale,(540+lengthdir_y(300,30+60*i)+_y*(1-(i <= 2)*2))*_winScale);
+			draw_vertex((_hexX+lengthdir_x(300,90+60*i))*_winScale,(540+lengthdir_y(300,90+60*i)+_y*(1-((i+1) % 6 <= 2)*2))*_winScale);
 		}
 		draw_primitive_end();
 	
 		if !sprite_exists(global.playerSprites[winOrder[0]][0])
-				draw_sprite_ext(sDefaultIcons,winOrder[0],_hexX+defaultIconSize/2,700-defaultIconSize/2,1,1,-90,c_white,animcurve_channel_evaluate(xMoveCurve,median(textPercent-2,1,0)));
+				draw_sprite_ext(sDefaultIcons,winOrder[0],(_hexX+defaultIconSize/2)*_winScale,(700-defaultIconSize/2)*_winScale,_winScale,_winScale,-90,c_white,animcurve_channel_evaluate(xMoveCurve,median(textPercent-2,1,0)));
 
 		// Not 1st Records
 		var _global = oGlobalManager.globalScores;
@@ -144,11 +151,11 @@ if !global.title {
 			_x = _panelX - 1200 + 250 - 50 * i - 100 / _scale * (1 - _percent);
 			_y = 280+200*i+30*(i != 0);
 		
-			draw_sprite_ext(sRanking,0,_x+lengthdir_x(20,-30),_y+lengthdir_y(20,-30),_scale,_scale,0,global.colours[_player],_percent);
-			draw_sprite_ext(sRanking,0,_x,_y,_scale,_scale,0,c_black,_percent);
+			draw_sprite_ext(sRanking,0,(_x+lengthdir_x(20,-30))*_winScale,(_y+lengthdir_y(20,-30))*_winScale,_scale*_winScale,_scale*_winScale,0,global.colours[_player],_percent);
+			draw_sprite_ext(sRanking,0,_x*_winScale,_y*_winScale,_scale*_winScale,_scale*_winScale,0,c_black,_percent);
 			
 			if !sprite_exists(alone ? _global[i].sprite : global.playerSprites[_player][0]) {
-				draw_sprite_ext(sDefaultIcons,_player,_x+25*_scale,_y+15*_scale,100/defaultIconSize*_scale,100/defaultIconSize*_scale,0,c_white,_percent);
+				draw_sprite_ext(sDefaultIcons,_player,(_x+25*_scale)*_winScale,(_y+15*_scale)*_winScale,100/defaultIconSize*_scale*_winScale,100/defaultIconSize*_scale*_winScale,0,c_white,_percent);
 			}
 		}
 	
@@ -171,12 +178,14 @@ if !global.title {
 		draw_line_width(_hexX-200,280,_hexX+200,280,5);
 		draw_set_alpha(animcurve_channel_evaluate(xMoveCurve,median(textPercent-1,1,0)));
 	
-		_textScale = min(1.5,460/string_width(GLOBAL.names[winOrder[0]]))
-		draw_set_valign(fa_middle);
-		draw_text_transformed(_hexX,345,GLOBAL.names[winOrder[0]],_textScale,max(1.2,_textScale),0);
+		if global.operaGX {
+			_textScale = min(1.5,460/string_width(GLOBAL.names[winOrder[0]]))
+			draw_set_valign(fa_middle);
+			draw_text_transformed(_hexX,345,GLOBAL.names[winOrder[0]],_textScale,max(1.2,_textScale),0);
+		}
 	
 		draw_set_valign(fa_top);
-		draw_text_transformed(_hexX,410,string(GLOBAL.scores[winOrder[0]] div 60)+":"+string_replace(string_format(GLOBAL.scores[winOrder[0]] % 60,2,2)," ","0"),1.5,1.5,0);
+		draw_text_transformed(_hexX,410-30*(!global.operaGX),string(GLOBAL.scores[winOrder[0]] div 60)+":"+string_replace(string_format(GLOBAL.scores[winOrder[0]] % 60,2,2)," ","0"),1.5+0.3*(!global.operaGX),1.5+0.3*(!global.operaGX),0);
 		draw_set_alpha(1);
 	
 		//Next Round In:
@@ -217,10 +226,16 @@ if !global.title {
 			draw_text_transformed(_x+550*_scale	,_y+120*_scale,string(_score div 60)+":"+string_replace(string_format(_score % 60,2,2)," ","0"),_scale,_scale,0);
 			draw_set_halign(fa_left);
 			draw_set_valign(fa_top);
-		
-			_textScale = min(1,470/string_width(_name)) * 0.9 * _scale;
-		
-			draw_text_transformed(_x+140*_scale,_y+20*_scale,_name,_textScale,_textScale,0);
+			
+			if global.operaGX {
+				_textScale = min(1,470/string_width(_name)) * 0.9 * _scale;
+				draw_text_transformed(_x+140*_scale,_y+20*_scale,_name,_textScale,_textScale,0);
+			} else {
+				var _place = ["1ST","2ND","3RD"];
+				var _text = _place[i];
+				if oGlobalManager.ownGlobalScore == i _text += "--NEW RECORD";
+				draw_text_transformed(_x+140*_scale,_y+20*_scale,_text,_scale*(1-0.15*(oGlobalManager.ownGlobalScore == i)),_scale*(1-0.15*(oGlobalManager.ownGlobalScore == i)),0);
+			}
 		
 			gpu_set_tex_filter(_texFilter);
 		}
@@ -249,36 +264,46 @@ if transitionPercent != 1 {
 			draw_surface(oGlobalManager.transitionSurfacePing,0,0);
 			gpu_set_blendmode(bm_normal);
 		} else {
-			draw_surface(oGlobalManager.transitionSurfacePing,0,0);
-			gpu_set_blendmode(bm_subtract);
-			draw_set_color(c_black);
-			gpu_set_blendmode(bm_subtract);
-			for(var i = 0; i < 6; i++) {
-				draw_triangle(_x,_y,_x+lengthdir_x(_len,i*360/6+transitionDir),_y+lengthdir_y(_len,i*360/6+transitionDir),_x+lengthdir_x(_len,(i+1)*360/6+transitionDir),_y+lengthdir_y(_len,(i+1)*360/6+transitionDir),false);
+			if oRender.disable == 2 {
+				draw_surface_ext(oGlobalManager.transitionSurfacePing,0,0,1,1,0,c_white,1-median(0,1,transitionPercent*1.3));
+			} else {
+				draw_surface(oGlobalManager.transitionSurfacePing,0,0);
+				gpu_set_blendenable(false);
+				draw_set_alpha(0);
+				for(var i = 0; i < 6; i++) {
+					draw_triangle(_x,_y,_x+lengthdir_x(_len,i*360/6+transitionDir),_y+lengthdir_y(_len,i*360/6+transitionDir),_x+lengthdir_x(_len,(i+1)*360/6+transitionDir),_y+lengthdir_y(_len,(i+1)*360/6+transitionDir),false);
+				}
+				draw_set_alpha(1);
+				gpu_set_blendenable(true);
 			}
-			gpu_set_blendmode(bm_normal);
 		}
 		
 		//Lines
-		draw_set_color(make_color_hsv(Wave(260,265,5,0)/360*255,255,255));
-			var _width = 45+min(0,_wallLen);
-			_len += _width;
-		for(var i = 0; i < 6; i++) {
-			draw_line_width(
+		if oRender.disable != 2 or transitionChange {
+			draw_set_color(make_color_hsv(Wave(260,265,5,0)/360*255,255,255));
+				var _width = 45+min(0,_wallLen);
+				_len += _width;
+			for(var i = 0; i < 6; i++) {
+				draw_line_width(
 	
-			_x+lengthdir_x(_len,i*360/6+transitionDir)-lengthdir_x(_width/2,(i-1)*360/6+90+transitionDir),
-			_y+lengthdir_y(_len,i*360/6+transitionDir)-lengthdir_y(_width/2,(i-1)*360/6+90+transitionDir),
-			_x+lengthdir_x(_len,(i+1)*360/6+transitionDir)-lengthdir_x(_width/2,(i-1)*360/6+90+transitionDir),
-			_y+lengthdir_y(_len,(i+1)*360/6+transitionDir)-lengthdir_y(_width/2,(i-1)*360/6+90+transitionDir),
+				_x+lengthdir_x(_len,i*360/6+transitionDir)-lengthdir_x(_width/2,(i-1)*360/6+90+transitionDir),
+				_y+lengthdir_y(_len,i*360/6+transitionDir)-lengthdir_y(_width/2,(i-1)*360/6+90+transitionDir),
+				_x+lengthdir_x(_len,(i+1)*360/6+transitionDir)-lengthdir_x(_width/2,(i-1)*360/6+90+transitionDir),
+				_y+lengthdir_y(_len,(i+1)*360/6+transitionDir)-lengthdir_y(_width/2,(i-1)*360/6+90+transitionDir),
 	
-			_width);
+				_width);
+			}
 		}
 		surface_reset_target();
-		draw_surface(oGlobalManager.transitionSurfacePong,0,0);
+		draw_surface_ext(oGlobalManager.transitionSurfacePong,0,0,global.resW/1920,global.resH/1080,0,c_white,1);
 	}
 	
 	if !oRender.disable {
 		surface_reset_target();
+		if !surface_exists(oRender.viewSurface) {
+			oRender.viewSurface = surface_create(global.resW,global.resH);
+			view_set_surface_id(0,oRender.viewSurface);
+		}
 		surface_set_target(oRender.viewSurface);
 		_drawSurface();
 		surface_reset_target();

@@ -54,6 +54,7 @@ if !global.title {
 				
 				//Update Global Scores
 				with(oGlobalManager) {
+					if !global.operaGX ownGlobalScore = -1;
 					var _score = GLOBAL.scores[playerNum];
 					if ownGlobalScore != -1 {
 						if globalScores[ownGlobalScore].points < _score {
@@ -80,6 +81,13 @@ if !global.title {
 								});
 								ownGlobalScore = i;
 								if array_length(globalScores) > 3 array_resize(globalScores,3);
+								if !global.operaGX {
+									ini_open(SAVEFILE);
+									for(var j = 0; j < array_length(globalScores); j++) {
+										ini_write_real("scores",string(j),globalScores[j].points);	
+									}
+									ini_close();
+								}
 							}
 							break;
 						}
@@ -125,10 +133,10 @@ if !global.title {
 						audio_sound_gain(mGameOver,0,200);
 					}
 					recordPercent = Approach(recordPercent,2.6,0.03);
-					if recordPercent >= 1.4 {
+					if recordPercent >= 1.2 {
 						hexPercent = Approach(hexPercent,2,0.03);
 						if hexPercent == 2 {
-							textPercent = Approach(textPercent,3,0.06);
+							textPercent = Approach(textPercent,3,0.07);
 						}
 					}
 				}
@@ -153,13 +161,10 @@ if !global.title {
 			camH = lerp(camHMax,1080,_percent);
 			camera_set_view_size(cam,camW,camH);
 		}
-		if GLOBAL.camZoom == 1 and SYNC {
+		if GLOBAL.camZoom == 1 and transitionPercent == 1 and SYNC {
 			GLOBAL.roundStart = true;
 			audio_stop_sound(mGameOver);
 			if !audio_is_playing(mMusic) oGlobalManager.music = audio_play_sound(mMusic,1,true,oGlobalManager.musicVol,choose(51.692, 95.999, 155.076));
-			with(oDoomWall) {
-				surface_resize(surface,1920,1080);
-			}
 		}
 	}
 } else if transitionPercent == 1 and (oTitle.buttonPressed == 1 or oTitle.buttonMovePercent >= 0.7) and SYNC {
@@ -173,14 +178,11 @@ if !global.title {
 
 //Transition
 if transitionPercent != 1 {
+	if !surface_exists(oGlobalManager.transitionSurfacePing) oGlobalManager.transitionSurfacePing = surface_create(1920,1080);
 	if !surface_exists(oGlobalManager.transitionSurfacePong) oGlobalManager.transitionSurfacePong = surface_create(1920,1080);
 	transitionPercent = Approach(transitionPercent,1,0.02);
 	transitionDir -= 0.7;
-	if transitionPercent == 1 {
-		if transitionChange Transition();
-		else {
-			surface_free(oGlobalManager.transitionSurfacePing);
-			surface_free(oGlobalManager.transitionSurfacePong);
-		}
+	if transitionPercent == 1 and transitionChange {
+		Transition();
 	}
 }

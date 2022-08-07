@@ -1,17 +1,43 @@
 /// @desc Flash Score
 
-if keyboard_check_pressed(vk_shift) or device_mouse_check_button_pressed(2,mb_left) {
-	if oRender.disable {
-		oRender.disable = false;
-		application_surface_draw_enable(false);
-		if !surface_exists(oRender.viewSurface) oRender.viewSurface = surface_create(1920,1080);
-		view_set_surface_id(0,oRender.viewSurface);
-	} else {
-		oRender.disable = true;
-		application_surface_draw_enable(true);
-		view_set_surface_id(0,-1);
-	}	
+if global.isBrowser ScaleCanvas();
+
+if !global.isBrowser and os_type != os_operagx {
+	if keyboard_check_pressed(vk_f4) or keyboard_check_pressed(vk_f11) window_set_fullscreen(!window_get_fullscreen());
+	if keyboard_check_pressed(vk_escape) game_end();
+	
+	var _aspect = 1920/1080;
+	windowW = window_get_width();
+	windowH = window_get_height();
 }
+
+if global.mobile and keyboard_check_pressed(vk_backspace) game_end();
+
+if keyboard_check_pressed(vk_shift) or device_mouse_check_button_pressed(3,mb_left) {
+	if oRender.disable {
+		if oRender.disable == 2 {
+			application_surface_draw_enable(false);
+			if !surface_exists(oRender.viewSurface) oRender.viewSurface = surface_create(1920,1080);
+			view_set_surface_id(0,oRender.viewSurface);
+			gpu_set_tex_filter(true);
+		}
+	} else {
+		application_surface_draw_enable(true);
+		// Feather disable once GM1029
+		view_set_surface_id(0,-1);
+		gpu_set_tex_filter(false);
+	}
+
+	oRender.disable++;
+	if oRender.disable == 3 oRender.disable = 0;
+	qualitySign = 60;
+	
+	ini_open(SAVEFILE);
+	ini_write_real("graphics","disableFX",oRender.disable);
+	ini_close();
+}
+
+if qualitySign != 0 qualitySign--;
 
 if global.title exit;
 

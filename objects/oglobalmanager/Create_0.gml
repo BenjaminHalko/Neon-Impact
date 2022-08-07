@@ -12,10 +12,17 @@
 #macro SPECTATING GLOBAL.spectateMode[oGlobalManager.playerNum]
 #macro GLOBAL oGameManager
 #macro SAVEFILE "save.ini"
+#macro SYNCTEST false
 
 #macro CHALLENGEID "d655ef5e-ed52-4228-ac58-292edf12ec3d"
 
 randomize();
+
+qualitySign = 0;
+
+global.operaGX = os_type == os_operagx;
+global.mobile = os_type == os_android;
+global.isBrowser = !global.operaGX and os_browser != browser_not_a_browser;
 
 global.title = true;
 global.colours = [ #00FFFF, #FF0048, #55FF00, #FF9C00, #5500FF ];
@@ -43,12 +50,18 @@ ini_close();
 
 switchedToSinglePlayer = false;
 
-transitionSurfacePing = -1;
-transitionSurfacePong = -1;
+transitionSurfacePing = surface_create(1920,1080);
+transitionSurfacePong = surface_create(1920,1080);
 
 musicLastPos = 0;
 bumperScale = [0,0];
 music = noone;
+
+global.resW = 1920;
+global.resH = 1080;
+
+windowW = 1920;
+windowH = 1080;
 
 try {
 	gxc_challenge_get_global_scores(function(_status, _result) {
@@ -72,6 +85,24 @@ try {
 	});
 } catch (_error) {
 	show_debug_message(_error);	
+}
+
+if !global.operaGX {
+	ini_open(SAVEFILE);
+	globalScores = [{
+		username: "PLAYER 1",
+		sprite: noone,
+		points: ini_read_real("scores","0",60)
+	},{
+		username: "PLAYER 1",
+		sprite: noone,
+		points: ini_read_real("scores","1",30)
+	},{
+		username: "PLAYER 1",
+		sprite: noone,
+		points: ini_read_real("scores","2",15)
+	}];
+	ini_close();
 }
 
 instance_create_layer(0,0,layer,oTitle);
