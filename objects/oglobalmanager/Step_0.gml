@@ -10,7 +10,11 @@ if keyboard_check_pressed(vk_shift) or device_mouse_check_button_pressed(2,mb_le
 		oRender.disable = true;
 		application_surface_draw_enable(true);
 		view_set_surface_id(0,-1);
-	}	
+	}
+	
+	ini_open(SAVEFILE);
+	ini_write_real("graphics","disableFX",oRender.disable);
+	ini_close();
 }
 
 if global.title exit;
