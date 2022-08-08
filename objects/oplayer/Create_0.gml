@@ -23,7 +23,7 @@ mouseY = 0;
 drawingLine = false;
 launchDir = image_angle;
 launchDist = 0;
-launchLenMax = 300;
+launchLenMax = 250;
 launchSpd = 30;
 maxSpd = 40;
 
