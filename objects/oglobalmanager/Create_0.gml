@@ -17,6 +17,8 @@
 
 randomize();
 
+instance_create_layer(0,0,"Render",oRender);
+
 global.title = true;
 global.colours = [ #00FFFF, #FF0048, #55FF00, #FF9C00, #5500FF ];
 global.multiplayer = false;

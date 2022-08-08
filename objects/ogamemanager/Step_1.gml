@@ -157,9 +157,6 @@ if !global.title {
 			GLOBAL.roundStart = true;
 			audio_stop_sound(mGameOver);
 			if !audio_is_playing(mMusic) oGlobalManager.music = audio_play_sound(mMusic,1,true,oGlobalManager.musicVol,choose(51.692, 95.999, 155.076));
-			with(oDoomWall) {
-				surface_resize(surface,1920,1080);
-			}
 		}
 	}
 } else if transitionPercent == 1 and (oTitle.buttonPressed == 1 or oTitle.buttonMovePercent >= 0.7) and SYNC {
@@ -169,6 +166,10 @@ if !global.title {
 		oTitle.startScaleBounce = 0.15;
 		transitionPercent = -1.1;
 	}
+}
+
+if rollback_current_frame % 40 == 0 and SYNC {
+	oGlobalManager.ran = irandom(10);	
 }
 
 //Transition

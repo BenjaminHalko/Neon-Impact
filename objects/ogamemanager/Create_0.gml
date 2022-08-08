@@ -63,7 +63,7 @@ spectatorNumber = 0;
 
 tanAngle = darctan(540/960);
 
-test = 0;
+oGlobalManager.ran = 0;
 
 //GameOver
 GLOBAL.gameOver = false;
