@@ -313,3 +313,6 @@ if transitionPercent != 1 {
 		gpu_set_blendmode(bm_normal);
 	} else _drawSurface();
 }
+
+draw_set_halign(oGlobalManager.playerNum ? fa_left : fa_right);
+draw_text(oGlobalManager.playerNum ? 96 : 1920 - 96,200,string(oGlobalManager.ran));

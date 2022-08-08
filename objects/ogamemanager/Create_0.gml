@@ -59,6 +59,8 @@ GLOBAL.time = 0;
 GLOBAL.spectate = noone;
 spectatorNumber = 0;
 
+oGlobalManager.ran = 0;
+
 //GameOver
 GLOBAL.gameOver = false;
 stopTimer = false;

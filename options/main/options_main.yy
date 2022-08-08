@@ -16,5 +16,6 @@
   "option_template_description": null,
   "resourceVersion": "1.4",
   "name": "Main",
+  "tags": [],
   "resourceType": "GMMainOptions",
 }

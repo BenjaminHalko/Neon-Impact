@@ -32,5 +32,6 @@
   },
   "resourceVersion": "1.0",
   "name": "oDoomWall",
+  "tags": [],
   "resourceType": "GMObject",
 }
