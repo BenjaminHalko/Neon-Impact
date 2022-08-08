@@ -1,6 +1,6 @@
 /// @desc
 
-if !visible or !GLOBAL.roundStart or !SYNC exit;
+if !visible or !GLOBAL.roundStart exit;
 
 Collision(other,1.1+0.3*(other.object_index == oBot));
 if other.object_index != oBot {

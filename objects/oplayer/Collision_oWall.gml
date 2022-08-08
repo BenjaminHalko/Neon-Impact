@@ -1,6 +1,6 @@
 /// @desc
 
-if !visible or !GLOBAL.roundStart or !SYNC exit;
+if !visible or !GLOBAL.roundStart exit;
 
 Collision(other,1.4);
 other.colour = global.colours[index];

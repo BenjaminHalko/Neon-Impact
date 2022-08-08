@@ -1,6 +1,6 @@
 /// @desc
 
-if !visible or !other.visible or !GLOBAL.roundStart or !SYNC exit;
+if !visible or !other.visible or !GLOBAL.roundStart exit;
 
 if point_distance(0,0,hSpd,vSpd) < point_distance(0,0,other.hSpd,other.vSpd) exit;
 

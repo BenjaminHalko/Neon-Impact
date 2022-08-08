@@ -176,10 +176,6 @@ if !global.title {
 	}
 }
 
-if rollback_current_frame % 40 == 0 and SYNC {
-	oGlobalManager.ran = irandom(10);	
-}
-
 //Transition
 if transitionPercent != 1 {
 	if !surface_exists(oGlobalManager.transitionSurfacePing) oGlobalManager.transitionSurfacePing = surface_create(1920,1080);
