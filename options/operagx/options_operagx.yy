@@ -1,6 +1,6 @@
 {
-  "option_operagx_version": "1.0.0.177",
-  "option_operagx_next_version": "1.0.0.178",
+  "option_operagx_version": "1.0.0.182",
+  "option_operagx_next_version": "1.0.0.183",
   "option_operagx_game_name": "Neon Impact",
   "option_operagx_interpolate_pixels": true,
   "option_operagx_scale": 0,

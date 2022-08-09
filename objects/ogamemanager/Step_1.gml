@@ -115,7 +115,7 @@ if !global.title {
 		
 		if leave or GLOBAL.gameOver {
 			if !leave {
-				audio_sound_gain(mGameOver,1,0);
+				audio_sound_gain(mGameOver,1*oGlobalManager.musicVol,0);
 				if !audio_is_playing(mGameOver) and panelXPercent > 0 audio_play_sound(mGameOver,1,true,oGlobalManager.musicVol*0.7);
 				panelXPercent = Approach(panelXPercent,1,0.015);
 				if panelXPercent == 1 {
