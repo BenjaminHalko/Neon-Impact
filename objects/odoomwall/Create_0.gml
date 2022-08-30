@@ -47,6 +47,8 @@ drawWall = function(_x,_y,_width,_height) {
 	gpu_set_blendenable(true);
 	gpu_set_colorwriteenable(true,true,true,true);
 	gpu_set_blendmode_ext(bm_dest_alpha,bm_inv_dest_alpha);
+	while _x < 0 _x += texWidth;
+	while _y < 0 _y += texHeight;
 	draw_sprite_ext(sDoomWall,0,_x-_x%texWidth,_y-_y%texHeight,_width/texWidth+1,_height/texHeight+1,0,c_white,1);
 	gpu_set_blendmode(bm_normal);
 
