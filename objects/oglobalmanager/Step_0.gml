@@ -25,7 +25,7 @@ if keyboard_check_pressed(vk_shift) or device_mouse_check_button_pressed(3,mb_le
 		application_surface_draw_enable(true);
 		// Feather disable once GM1029
 		view_set_surface_id(0,-1);
-		gpu_set_tex_filter(false);
+		gpu_set_tex_filter(oRender.disable != 2);
 	}
 
 	oRender.disable++;

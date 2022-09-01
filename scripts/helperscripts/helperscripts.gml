@@ -191,6 +191,7 @@ function Transition(_change = false) {
 		if !surface_exists(oGlobalManager.transitionSurfacePing) oGlobalManager.transitionSurfacePing = surface_create(1920,1080);
 		if !surface_exists(oGlobalManager.transitionSurfacePong) oGlobalManager.transitionSurfacePong = surface_create(1920,1080);
 		
+		var _switched = transitionChange;
 		transitionChange = _change;
 		transitionPercent = 0;
 		
@@ -200,10 +201,12 @@ function Transition(_change = false) {
 			surface_reset_target();
 		} else {
 			audio_play_sound(snRoundStart,1,false,0.25*oGlobalManager.sfxVol);
-			var _surface = oRender.disable ? application_surface : oRender.viewSurface;
-			surface_set_target(oGlobalManager.transitionSurfacePing);
-			draw_surface_ext(_surface,0,0,1920/global.resW,1080/global.resH,0,c_white,1);
-			surface_reset_target();
+			if !_switched {
+				var _surface = oRender.disable ? application_surface : oRender.viewSurface;
+				surface_set_target(oGlobalManager.transitionSurfacePing);
+				draw_surface_ext(_surface,0,0,1920/global.resW,1080/global.resH,0,c_white,1);
+				surface_reset_target();
+			}
 		}
 	}
 	

@@ -25,7 +25,7 @@ if !ini_key_exists("graphics","disableFX") {
 ini_close();
 
 if disable {
-	gpu_set_tex_filter(false);
+	gpu_set_tex_filter(disable != 2);
 	exit;
 }
 
