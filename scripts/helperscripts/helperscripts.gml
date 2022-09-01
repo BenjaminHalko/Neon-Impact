@@ -189,6 +189,8 @@ function Transition(_change = false) {
 	with(oGameManager) {
 		if !surface_exists(oGlobalManager.transitionSurfacePing) oGlobalManager.transitionSurfacePing = surface_create(1920,1080);
 		if !surface_exists(oGlobalManager.transitionSurfacePong) transitionSurfacePong = surface_create(1920,1080);
+		
+		var _switched = transitionChange;
 		transitionChange = _change;
 		transitionPercent = 0;
 		
@@ -198,12 +200,14 @@ function Transition(_change = false) {
 			surface_reset_target();
 		} else {
 			audio_play_sound(snRoundStart,1,false,0.25*oGlobalManager.sfxVol);
-			var _surface = view_get_surface_id(0);
-			_surface = _surface == -1 ? application_surface : _surface;
-			if surface_exists(_surface) {
-				surface_set_target(oGlobalManager.transitionSurfacePing);
-				draw_surface(_surface,0,0);
-				surface_reset_target();
+			if !_switched {
+				var _surface = view_get_surface_id(0);
+				_surface = _surface == -1 ? application_surface : _surface;
+				if surface_exists(_surface) {
+					surface_set_target(oGlobalManager.transitionSurfacePing);
+					draw_surface(_surface,0,0);
+					surface_reset_target();
+				}
 			}
 		}
 	}

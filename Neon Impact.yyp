@@ -71,17 +71,17 @@
     {"roomId":{"name":"rGame","path":"rooms/rGame/rGame.yy",},},
   ],
   "Folders": [
-    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Render","folderPath":"folders/Global/Render.yy","order":2,},
-    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Global","folderPath":"folders/Global.yy","order":0,},
-    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Entities","folderPath":"folders/Entities.yy","order":1,},
-    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Sprites","folderPath":"folders/Entities/Sprites.yy","order":3,},
-    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Doom Wall","folderPath":"folders/Entities/Doom Wall.yy","order":5,},
-    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"GameOver","folderPath":"folders/Global/GameOver.yy","order":7,},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"~GXC API","folderPath":"folders/~GXC API.yy","order":2,},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Http Manager","folderPath":"folders/~GXC API/Http Manager.yy","order":0,},
-    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Title","folderPath":"folders/Global/Title.yy","order":9,},
+    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Entities","folderPath":"folders/Entities.yy","order":1,},
+    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Doom Wall","folderPath":"folders/Entities/Doom Wall.yy","order":5,},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"SoundFX","folderPath":"folders/Entities/SoundFX.yy","order":7,},
+    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Sprites","folderPath":"folders/Entities/Sprites.yy","order":3,},
+    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Global","folderPath":"folders/Global.yy","order":0,},
+    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"GameOver","folderPath":"folders/Global/GameOver.yy","order":7,},
+    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Render","folderPath":"folders/Global/Render.yy","order":2,},
     {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Sounds","folderPath":"folders/Global/Sounds.yy","order":11,},
+    {"resourceType":"GMFolder","resourceVersion":"1.0","name":"Title","folderPath":"folders/Global/Title.yy","order":9,},
   ],
   "AudioGroups": [
     {"resourceType":"GMAudioGroup","resourceVersion":"1.3","name":"audiogroup_default","targets":-1,},
@@ -91,6 +91,6 @@
   ],
   "IncludedFiles": [],
   "MetaData": {
-    "IDEVersion": "2022.800.0.199",
+    "IDEVersion": "2022.800.0.204",
   },
 }
