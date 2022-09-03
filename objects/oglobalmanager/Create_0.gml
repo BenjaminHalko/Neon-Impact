@@ -24,6 +24,9 @@ global.operaGX = os_type == os_operagx;
 global.mobile = os_type == os_android;
 global.isBrowser = !global.operaGX and os_browser != browser_not_a_browser;
 
+global.resW = 1920;
+global.resH = 1080;
+
 instance_create_layer(0,0,"Render",oRender);
 
 global.title = true;
@@ -58,9 +61,6 @@ transitionSurfacePong = surface_create(1920,1080);
 musicLastPos = 0;
 bumperScale = [0,0];
 music = noone;
-
-global.resW = 1920;
-global.resH = 1080;
 
 windowW = 1920;
 windowH = 1080;

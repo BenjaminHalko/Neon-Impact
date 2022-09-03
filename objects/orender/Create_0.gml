@@ -29,6 +29,6 @@ if disable {
 	exit;
 }
 
-viewSurface = surface_create(1920,1080);
+viewSurface = surface_create(global.resW,global.resH);
 application_surface_draw_enable(false);
 view_set_surface_id(0,viewSurface);

@@ -17,7 +17,7 @@ if keyboard_check_pressed(vk_shift) or device_mouse_check_button_pressed(3,mb_le
 	if oRender.disable {
 		if oRender.disable == 2 {
 			application_surface_draw_enable(false);
-			if !surface_exists(oRender.viewSurface) oRender.viewSurface = surface_create(1920,1080);
+			if !surface_exists(oRender.viewSurface) oRender.viewSurface = surface_create(global.resW,global.resH);
 			view_set_surface_id(0,oRender.viewSurface);
 			gpu_set_tex_filter(true);
 		}
